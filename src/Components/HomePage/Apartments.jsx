@@ -88,7 +88,10 @@ const PropertyFilter = () => {
                 {property.status}
               </div>
 
-              <button onClick={() => navigate("/Builder")} className="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition">
+              <button
+                onClick={() => navigate("/admindashboard")}
+                className="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition"
+              >
                 {property.button || "View Details"}
               </button>
             </div>
