@@ -12,7 +12,12 @@
     "type": "Apartments",
     "bed": 3,
     "bath": 2,
-    "sqft": 1500
+    "sqft": 1500,
+    "buildername": "casagrand",
+    "kitchen": 1,
+    "address": "123 Main St",
+    "title": "Modern Downtown Apartment"
+    
   },
   
   {
@@ -28,7 +33,11 @@
     "type": "Villas",
     "bed": 3,
     "bath": 2,
-    "sqft": 1500
+    "sqft": 1500,
+    "buildername": "radient",
+    "kitchen": 2,
+    "address": "123 Main St",
+    "title": "Modern Downtown Apartment"
   },
   {
     "id": 3,
@@ -43,7 +52,11 @@
     "type": "Plots",
     "bed": 3,
     "bath": 2,
-    "sqft": 1500
+    "sqft": 1500,
+    "buildername": "relator",
+    "kitchen": 3,
+    "address": "123 Main St",
+    "title": "Modern Downtown Apartment"
   }
   
 ]

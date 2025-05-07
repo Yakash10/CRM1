@@ -8,16 +8,10 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
-// Admin Dashboard Components
-import Sidebar from "./Components/AdminDashboard/Sidebar";
-import Navbar from "./Components/AdminDashboard/Navbar";
-import Card from "./Components/AdminDashboard/Card";
-import Chart from "./Components/AdminDashboard/Chart";
-import NewProperties from "./Components/AdminDashboard/NewProperties";
-import VendorStatus from "./Components/AdminDashboard/VendorStatus";
-import NewEnquiries from "./Components/AdminDashboard/NewEnquiries";
 
-//newly added imports
+// Admin dashboard 
+import AdminLayout from "./Components/AdminDashboard/AdminLayout";
+import Admin from "./Components/AdminDashboard/Admin";
 import PropertiesPage from "./Components/AdminDashboard/PropertiesPage";
 import LeadsPage from "./Components/AdminDashboard/LeadsPage";
 import Calendar from "./Components/AdminDashboard/Calendar";
@@ -25,6 +19,7 @@ import Vendor from "./Components/AdminDashboard/Vendor";
 import AgentPage from "./Components/AdminDashboard/AgentPage";
 import SettingsPage from "./Components/AdminDashboard/SettingsPage";
 import HelpPage from "./Components/AdminDashboard/HelpPage";
+
 
 
 
@@ -55,31 +50,21 @@ import BookingNavbar from "./Components/BookingInnerPage/BookingNavbar";
 import BookingDetails from "./Components/BookingInnerPage/BookingDetails";
 import BookingFooter from "./Components/BookingInnerPage/BookingFooter";
 
-// User Dashboard Components
-import UserSidebar from "./Components/UserDashboard/UserSidebar";
-import UserNavbar from "./Components/UserDashboard/UserNavbar";
-import CardSection from "./Components/UserDashboard/CardSection";
-import Bookings from "./Components/UserDashboard/Bookings";
-import Enquiries from "./Components/UserDashboard/Enquiries";
 
-// newly added imports
+// User Dashboard
+import User from "./Components/UserDashboard/User";
+import UserLayout from "./Components/UserDashboard/UserLayout";
 import SavedProperties from "./Components/UserDashboard/SavedProperties";
 import ClientPage from "./Components/UserDashboard/ClientPage";
 import UserCalendar from "./Components/UserDashboard/UserCalendar";
 import UserProperties from "./Components/UserDashboard/UserProperties";
 import Reports from "./Components/UserDashboard/Reports";
 
-// Property Management Dashboard Components
-import PropertySidebar from "./Components/PropertyManagementDashboard/PropertySidebar";
-import PropertyManagementNavbar from "./Components/PropertyManagementDashboard/Navbar";
-import PropertyCard from "./Components/PropertyManagementDashboard/PropertyCard";
-import TotalIncome from "./Components/PropertyManagementDashboard/TotalIncome";
-import Expenses from "./Components/PropertyManagementDashboard/Expenses";
-import PropertStatus from "./Components/PropertyManagementDashboard/PropertStatus";
-import RecentTransaction from "./Components/PropertyManagementDashboard/RecentTransaction";
 
-// new
 
+// property management dashboard
+import PropertiesLayout from "./Components/PropertyManagementDashboard/PropertiesLayout";
+import Properties from "./Components/PropertyManagementDashboard/Properties";
 import ManagementProperties from "./Components/PropertyManagementDashboard/ManagementProperties";
 import Tenants from "./Components/PropertyManagementDashboard/Tenants";
 import PropertyCalendar from "./Components/PropertyManagementDashboard/PropertyCalendar";
@@ -100,33 +85,7 @@ import ClientFooter from "./Components/ClientBookingPage/ClientFooter";
 // import VendorPage from "./Components/HomePage/VendorPage";
 // import AgentBrokersPage from "./Components/HomePage/AgentBrokersPage";
 
-// Admin Dashboard Layout
-function AdminDashboard() {
-  return (
-    <>
-      <div className="flex">
-        <Sidebar />
-        <div className="flex-1 p-4">
-          <Navbar />
 
-          <div className="flex flex-col gap-2 lg:flex-row">
-            <Card />
-          </div>
-
-          <div className="flex flex-col gap-2 mt-4 lg:flex-row">
-            <Chart />
-            <NewProperties />
-          </div>
-
-          <div className="flex flex-col gap-2 mt-4 lg:flex-row">
-            <VendorStatus />
-            <NewEnquiries />
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
 
 // Builder Inner Page Layout
 function BuilderInnerPage() {
@@ -152,44 +111,7 @@ function ClientBookingPage() {
   );
 }
 
-// User Dashboard Layout
-function UserDashboard() {
-  return (
-    <>
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <UserSidebar />
 
-        {/* Main Content Area */}
-        <div className="flex-1 p-4 bg-gray-100">
-          {/* Navbar */}
-          <UserNavbar />
-
-          {/* Card Section */}
-          <CardSection />
-
-          {/* Content Layout (Bookings, Enquiries) */}
-          <div className="flex flex-col lg:flex-row gap-4 mt-4 h-full">
-            <div className="w-full md:w-full lg:w-2/3 h-full">
-              <Bookings />
-            </div>
-            <div className="w-full md:w-full lg:w-1/3 h-full">
-              <Enquiries />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* User Properties Section */}
-      {/* <UserProperties/> */}
-      {/* <Reports /> */}
-
-      {/* <SavedProperties /> */}
-      {/* <ClientPage /> */}
-      {/* <UserCalendar/> */}
-    </>
-  );
-}
 
 // Main Landing Page Layout
 function LandingPage() {
@@ -237,32 +159,7 @@ function BookingPage() {
   );
 }
 
-// Property Management Dashboard
-function PropertyManagementDashboard() {
-  return (
-    <>
-      <div className="flex">
-        <PropertySidebar />
-        <div className="flex-1 p-4">
-          <PropertyManagementNavbar />
-          <PropertyCard />
-          <div className="flex flex-col md:flex-col gap-2 lg:flex-row">
-            <TotalIncome />
-            <Expenses />
-            <PropertStatus />
-          </div>
-          <RecentTransaction />
-        </div>
-      </div>
 
-      {/* <ManagementProperties/>
-      <Tenants/>
-      <PropertyCalendar />
-      <PropertyReport />
-      <Maintenance/> */}
-    </>
-  );
-}
 
 function App() {
   return (
@@ -270,45 +167,50 @@ function App() {
       <Routes>
         {/* Main Landing page routes */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/admindashboard" element={<AdminDashboard />} />
-        <Route path="/userdashboard" element={<UserDashboard />} />
+        {/* <Route path="/userdashboard" element={<UserDashboard />} /> */}
         <Route path="/property" element={<PropertyPage />} />
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/builder" element={<BuilderInnerPage />} />
         <Route path="/clientbooking" element={<ClientBookingPage />} />
-        <Route
-          path="/propertymanagement"
-          element={<PropertyManagementDashboard />}
-          s
-        />
+      
 
-        {/* landing page routes */}
-
-        {/* Admin Dashboard Routes */}
-        <Route path="/propertiespage" element={<PropertiesPage />} />
-        <Route path="/leadspage" element={<LeadsPage />} />
-        <Route path="/agentpage" element={<AgentPage />} />
-        <Route path="/vendor" element={<Vendor />} />
-        <Route path="/calender" element={<Calendar />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/help" element={<HelpPage />} />
+        {/* Admin Layout Route */}
+        <Route path="/" element={<AdminLayout />}>
+          <Route path="admin" element={<Admin />} /> {/* Dashboard */}
+          <Route path="propertiespage" element={<PropertiesPage />} />
+          <Route path="leadspage" element={<LeadsPage />} />
+          <Route path="agentpage" element={<AgentPage />} />
+          <Route path="vendor" element={<Vendor />} />
+          <Route path="calendar" element={<Calendar />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="help" element={<HelpPage />} />
+        </Route>
 
         {/* user dashboard routes */}
-        <Route path="/userproperties" element={<UserProperties />} />
-        <Route path="/savedproperties" element={<SavedProperties />} />
-        <Route path="/clientpage" element={<ClientPage />} />
-        <Route path="/usercalendar" element={<UserCalendar />} />
-        <Route path="/reports" element={<Reports />} />
+        <Route path="/" element={<UserLayout />}>
+          <Route path="user" element={<User />} /> {/* Dashboard */}
+          <Route path="userproperties" element={<UserProperties />} />
+          <Route path="savedproperties" element={<SavedProperties />} />
+          <Route path="clientpage" element={<ClientPage />} />
+          <Route path="usercalendar" element={<UserCalendar />} />
+          <Route path="reports" element={<Reports />} />
+        </Route>
 
-        {/* Property Management Dashboard Routes */}
-        <Route
-          path="/managementproperties"
-          element={<ManagementProperties />}
-        />
-        <Route path="/tenants" element={<Tenants />} />
-        <Route path="/propertycalendar" element={<PropertyCalendar />} />
-        <Route path="/propertyreport" element={<PropertyReport />} />
-        <Route path="/maintenance" element={<Maintenance />} />
+        {/* propertymanagement */}
+
+        <Route path="/" element={<PropertiesLayout />}>
+          <Route path="properties" element={<Properties />} /> {/* Dashboard */}
+          <Route
+            path="managementproperties"
+            element={<ManagementProperties />}
+          />
+          <Route path="tenants" element={<Tenants />} />
+          <Route path="propertycalendar" element={<PropertyCalendar />} />
+          <Route path="propertyreport" element={<PropertyReport />} />
+          <Route path="maintenance" element={<Maintenance />} />
+        </Route>
+
+       
 
         {/* Client Booking Page Routes */}
       </Routes>

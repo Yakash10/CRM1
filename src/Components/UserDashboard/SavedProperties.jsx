@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Heart, HeartIcon } from "lucide-react"; // If using lucide-react for icons
+import { Heart, HeartIcon, MapPin, Home, DollarSign } from "lucide-react"; // Icons
 
 const initialSaved = [
   {
@@ -10,7 +10,7 @@ const initialSaved = [
     price: 850000,
     liked: true,
     image:
-      "https://cdnassets.hw.net/04/2c/967deff449bd8a24c5fbb96dccd2/6474f8a03a894163ac235432988b491f.png", // Add an image URL
+      "https://cdnassets.hw.net/04/2c/967deff449bd8a24c5fbb96dccd2/6474f8a03a894163ac235432988b491f.png",
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const initialSaved = [
     price: 650000,
     liked: false,
     image:
-      "https://cdnassets.hw.net/04/2c/967deff449bd8a24c5fbb96dccd2/6474f8a03a894163ac235432988b491f.png", // Add an image URL
+      "https://cdnassets.hw.net/04/2c/967deff449bd8a24c5fbb96dccd2/6474f8a03a894163ac235432988b491f.png",
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ const initialSaved = [
     price: 1200000,
     liked: true,
     image:
-      "https://cdnassets.hw.net/04/2c/967deff449bd8a24c5fbb96dccd2/6474f8a03a894163ac235432988b491f.png", // Add an image URL
+      "https://cdnassets.hw.net/04/2c/967deff449bd8a24c5fbb96dccd2/6474f8a03a894163ac235432988b491f.png",
   },
 ];
 
@@ -80,7 +80,10 @@ const SavedProperties = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedList.map((property) => (
-            <div key={property.id} className="p-4 rounded border relative">
+            <div
+              key={property.id}
+              className="p-4 rounded  relative"
+            >
               {/* Property Image */}
               <img
                 src={property.image}
@@ -96,22 +99,26 @@ const SavedProperties = () => {
                 {property.liked ? <Heart fill="currentColor" /> : <HeartIcon />}
               </button>
 
-              <h2 className="text-lg font-bold mb-2">{property.name}</h2>
-              <p>
-                <span className="font-semibold">Location:</span>{" "}
-                {property.location}
-              </p>
-              <p>
-                <span className="font-semibold">Type:</span> {property.type}
-              </p>
-              <p>
-                <span className="font-semibold">Price:</span> $$
-                {property.price.toLocaleString()}
-              </p>
-              <div className="flex justify-between mt-4">
-                <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                  View
-                </button>
+              <h2 className="text-lg font-bold mb-3">{property.name}</h2>
+
+              {/* Single line icons row */}
+              <div className="flex items-center gap-4 text-sm text-gray-700">
+                <div className="flex items-center gap-1">
+                  <MapPin size={16} />
+                  <span>{property.location}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Home size={16} />
+                  <span>{property.type}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <DollarSign size={16} />
+                  <span>{property.price.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Remove Button */}
+              <div className="flex mt-3">
                 <button
                   onClick={() => handleRemove(property.id)}
                   className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"

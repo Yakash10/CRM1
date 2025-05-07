@@ -1,326 +1,359 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Pencil, Trash2, Plus, X } from "lucide-react";
 
-// Mock data for contractors (replace with API fetch in real use)
-const mockContractors = [
-  { id: 1, name: "John Doe" },
-  { id: 2, name: "Jane Smith" },
-  { id: 3, name: "Michael Johnson" },
-];
+const defaultForm = {
+  title: "",
+  description: "",
+  propertyId: "",
+  unitNumber: "",
+  tenantId: "",
+  priority: "Low",
+  status: "New",
+  category: "",
+  dateSubmitted: "",
+  assignedTo: "",
+  estimateCost: "",
+  notes: "",
+};
 
-// Mock data for maintenance requests (replace with API fetch in real use)
-const mockRequests = [
+const defaultRequests = [
   {
     id: 1,
-    title: "Fix leaky faucet",
-    property: "Apartment A",
-    tenant: "Alice",
-    date: "2025-04-25",
-    status: "Pending",
-    priority: "High",
-    cost: 0,
+    title: "Leaky Faucet in Kitchen",
+    description: "The kitchen faucet is leaking and needs to be fixed.",
+    propertyId: "Greenview Apartments",
+    unitNumber: "A-101",
+    tenantId: "John Doe",
+    priority: "Medium",
+    status: "New",
+    category: "Plumbing",
+    dateSubmitted: "2025-05-01",
+    assignedTo: "Plumber Mike",
+    estimateCost: "$50",
+    notes: "Tenant reported via email",
   },
   {
     id: 2,
-    title: "Paint wall",
-    property: "Apartment B",
-    tenant: "Bob",
-    date: "2025-04-20",
-    status: "In Progress",
-    priority: "Medium",
-    cost: 50,
+    title: "Broken Window",
+    description: "Living room window glass is cracked.",
+    propertyId: "Sunrise Villas",
+    unitNumber: "B-202",
+    tenantId: "Jane Smith",
+    priority: "High",
+    status: "Assigned",
+    category: "Windows",
+    dateSubmitted: "2025-04-30",
+    assignedTo: "GlassFix Co.",
+    estimateCost: "$120",
+    notes: "",
   },
   {
     id: 3,
-    title: "Replace lightbulb",
-    property: "Apartment C",
-    tenant: "Charlie",
-    date: "2025-04-18",
-    status: "Completed",
-    priority: "Low",
-    cost: 20,
+    title: "AC Not Cooling",
+    description: "Air conditioner not cooling properly.",
+    propertyId: "Palm Residency",
+    unitNumber: "C-303",
+    tenantId: "Robert Brown",
+    priority: "High",
+    status: "In Progress",
+    category: "HVAC",
+    dateSubmitted: "2025-04-29",
+    assignedTo: "CoolAir Services",
+    estimateCost: "$200",
+    notes: "Technician scheduled for May 6",
   },
 ];
 
-const MaintenancePage = () => {
-  const [requests, setRequests] = useState(mockRequests);
-  const [contractors, setContractors] = useState(mockContractors);
-  const [formVisible, setFormVisible] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    property: "",
-    tenant: "",
-    priority: "Low",
-    description: "",
-  });
+const MaintenanceRequests = () => {
+  const [requests, setRequests] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [form, setForm] = useState(defaultForm);
+  const [isOpen, setIsOpen] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState("");
 
-  const filterRequests = (status, priority) => {
-    return requests.filter(
-      (req) =>
-        (status ? req.status === status : true) &&
-        (priority ? req.priority === priority : true)
+  useEffect(() => {
+    // Load default requests only once
+    setRequests(defaultRequests);
+  }, []);
+
+  useEffect(() => {
+    setFiltered(
+      requests.filter((r) =>
+        r.title.toLowerCase().includes(search.toLowerCase())
+      )
     );
+  }, [search, requests]);
+
+  const handleSubmit = () => {
+    if (editId) {
+      setRequests((prev) =>
+        prev.map((r) => (r.id === editId ? { ...form, id: editId } : r))
+      );
+    } else {
+      setRequests((prev) => [...prev, { ...form, id: Date.now() }]);
+    }
+    resetForm();
   };
 
-  const handleSubmitRequest = (data) => {
-    if (data.title && data.property && data.tenant && data.description) {
-      setRequests([
-        ...requests,
-        {
-          ...data,
-          id: requests.length + 1,
-          date: new Date().toLocaleDateString(),
-          status: "Pending",
-          cost: 0,
-        },
-      ]);
-      setFormData({
-        title: "",
-        property: "",
-        tenant: "",
-        priority: "Low",
-        description: "",
-      });
-      setFormVisible(false);
+  const handleEdit = (req) => {
+    setForm(req);
+    setEditId(req.id);
+    setIsOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    setRequests((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  const resetForm = () => {
+    setForm(defaultForm);
+    setIsOpen(false);
+    setEditId(null);
+  };
+
+  const getPriorityBadge = (priority) => {
+    const base = "text-xs px-2 py-1 rounded-full";
+    switch (priority) {
+      case "High":
+        return (
+          <span className={`${base} bg-orange-100 text-orange-700`}>
+            High Priority
+          </span>
+        );
+      case "Medium":
+        return (
+          <span className={`${base} bg-yellow-100 text-yellow-700`}>
+            Medium Priority
+          </span>
+        );
+      case "Low":
+        return (
+          <span className={`${base} bg-blue-100 text-blue-700`}>
+            Low Priority
+          </span>
+        );
+      default:
+        return null;
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleUpdateStatus = (requestId, status) => {
-    setRequests(
-      requests.map((req) => (req.id === requestId ? { ...req, status } : req))
-    );
-  };
-
-  const handleAssignContractor = (requestId, contractorId) => {
-    setRequests(
-      requests.map((req) =>
-        req.id === requestId ? { ...req, contractorId } : req
-      )
-    );
-  };
-
-  const handleCostChange = (requestId, cost) => {
-    setRequests(
-      requests.map((req) => (req.id === requestId ? { ...req, cost } : req))
-    );
+  const getStatusBadge = (status) => {
+    const base = "text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700";
+    return <span className={base}>{status}</span>;
   };
 
   return (
-    <div className="space-y-8 p-4 sm:p-6 md:p-8 lg:p-10">
-      <h2 className="text-xl md:text-2xl font-bold mb-6 text-center sm:text-left">
-        Maintenance Management
-      </h2>
-
-      <div className="flex flex-wrap gap-4 mb-6 justify-center sm:justify-start">
+    <div className="max-w-7xl mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold flex items-center gap-2">
+          Maintenance Requests
+        </h2>
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
-          onClick={() => setFormVisible(true)}
+          onClick={() => setIsOpen(true)}
+          className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded flex items-center gap-2"
         >
-          Create Request
-        </button>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
-          onClick={() => setRequests(filterRequests("Pending", ""))}
-        >
-          Filter Pending
-        </button>
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-300"
-          onClick={() => setRequests(filterRequests("", "High"))}
-        >
-          Filter High Priority
+          <Plus size={18} /> Add New Request
         </button>
       </div>
 
-      {formVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4 text-center">
-              Create New Maintenance Request
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+        {["All Requests", "New", "Assigned", "In Progress", "Completed"].map(
+          (label, index) => (
+            <div
+              key={index}
+              className="border rounded-lg px-4 py-3 text-center shadow-sm hover:shadow transition"
+            >
+              <h3 className="text-sm text-gray-600">{label}</h3>
+              <p className="text-xl font-semibold">
+                {label === "All Requests"
+                  ? requests.length
+                  : requests.filter((r) => r.status === label).length}
+              </p>
+            </div>
+          )
+        )}
+      </div>
+
+      {/* Search Input */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-2">
+        <input
+          type="text"
+          placeholder="Search maintenance requests..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className=" w-[250px] px-4 py-2 border rounded"
+        />
+      </div>
+
+      {/* Request Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filtered.map((req) => (
+          <div key={req.id} className="border rounded-lg p-4 shadow-sm">
+            <h3 className="text-lg font-semibold">{req.title}</h3>
+            <p className="text-sm text-gray-600 mb-2">{req.description}</p>
+            <div className="text-sm text-gray-700 mb-1">
+              <strong>Property:</strong> {req.propertyId} &nbsp; | &nbsp;
+              <strong>Unit:</strong> {req.unitNumber} &nbsp; | &nbsp;
+              <strong>Tenant:</strong> {req.tenantId}
+            </div>
+            <div className="text-sm text-gray-700 mb-1">
+              <strong>Category:</strong> {req.category} &nbsp; | &nbsp;
+              <strong>Submitted:</strong> {req.dateSubmitted}
+            </div>
+            <div className="text-sm text-gray-700 mb-1">
+              <strong>Assigned To:</strong> {req.assignedTo || "N/A"} &nbsp; |
+              &nbsp;
+              <strong>Estimate Cost:</strong> {req.estimateCost || "N/A"}
+            </div>
+            {req.notes && (
+              <div className="text-sm text-gray-700 mb-2">
+                <strong>Notes:</strong> {req.notes}
+              </div>
+            )}
+            <div className="flex items-center gap-2 mb-2">
+              {getPriorityBadge(req.priority)}
+              {getStatusBadge(req.status)}
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleEdit(req)}
+                className="border px-4 py-2 rounded flex items-center gap-1"
+              >
+                <Pencil size={16} /> Edit
+              </button>
+              <button
+                onClick={() => handleDelete(req.id)}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded flex items-center gap-1"
+              >
+                <Trash2 size={16} /> Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Form Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={resetForm}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              <X size={20} />
+            </button>
+            <h3 className="text-xl font-bold mb-4">
+              {editId ? "Edit Request" : "Add New Request"}
             </h3>
-            <CreateMaintenanceRequestForm
-              formData={formData}
-              onChange={handleChange}
-              onSubmit={handleSubmitRequest}
-              onClose={() => setFormVisible(false)}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                placeholder="Title"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="border p-2 rounded"
+              />
+              <input
+                placeholder="Property"
+                value={form.propertyId}
+                onChange={(e) =>
+                  setForm({ ...form, propertyId: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+              <input
+                placeholder="Unit Number"
+                value={form.unitNumber}
+                onChange={(e) =>
+                  setForm({ ...form, unitNumber: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+              <input
+                placeholder="Tenant"
+                value={form.tenantId}
+                onChange={(e) => setForm({ ...form, tenantId: e.target.value })}
+                className="border p-2 rounded"
+              />
+              <select
+                value={form.priority}
+                onChange={(e) => setForm({ ...form, priority: e.target.value })}
+                className="border p-2 rounded"
+              >
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+              <select
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+                className="border p-2 rounded"
+              >
+                <option>New</option>
+                <option>Assigned</option>
+                <option>In Progress</option>
+                <option>Completed</option>
+                <option>Cancelled</option>
+              </select>
+              <input
+                placeholder="Category"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="border p-2 rounded"
+              />
+              <input
+                placeholder="Date Submitted"
+                value={form.dateSubmitted}
+                onChange={(e) =>
+                  setForm({ ...form, dateSubmitted: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+              <input
+                placeholder="Assigned To"
+                value={form.assignedTo}
+                onChange={(e) =>
+                  setForm({ ...form, assignedTo: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+              <input
+                placeholder="Estimate Cost"
+                value={form.estimateCost}
+                onChange={(e) =>
+                  setForm({ ...form, estimateCost: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+            </div>
+            <textarea
+              placeholder="Description"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              className="border p-2 rounded w-full mt-4"
             />
+            <textarea
+              placeholder="Notes"
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              className="border p-2 rounded w-full mt-2"
+            />
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={handleSubmit}
+                className="bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                {editId ? "Update" : "Save"}
+              </button>
+            </div>
           </div>
         </div>
       )}
-
-      <MaintenanceRequestsTable
-        requests={requests}
-        onUpdateStatus={handleUpdateStatus}
-        onAssignContractor={handleAssignContractor}
-        onCostChange={handleCostChange}
-        contractors={contractors}
-      />
     </div>
   );
 };
 
-const CreateMaintenanceRequestForm = ({
-  formData,
-  onChange,
-  onSubmit,
-  onClose,
-}) => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="text"
-        name="title"
-        value={formData.title}
-        onChange={onChange}
-        placeholder="Request Title"
-        className="w-full px-4 py-2 border rounded hover:border-blue-500"
-      />
-      <input
-        type="text"
-        name="property"
-        value={formData.property}
-        onChange={onChange}
-        placeholder="Property"
-        className="w-full px-4 py-2 border rounded hover:border-blue-500"
-      />
-      <input
-        type="text"
-        name="tenant"
-        value={formData.tenant}
-        onChange={onChange}
-        placeholder="Tenant Name"
-        className="w-full px-4 py-2 border rounded hover:border-blue-500"
-      />
-      <textarea
-        name="description"
-        value={formData.description}
-        onChange={onChange}
-        placeholder="Issue Description"
-        className="w-full px-4 py-2 border rounded hover:border-blue-500"
-      />
-      <select
-        name="priority"
-        value={formData.priority}
-        onChange={onChange}
-        className="w-full px-4 py-2 border rounded hover:border-blue-500"
-      >
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-      </select>
-      <div className="flex justify-between">
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
-        >
-          Create Request
-        </button>
-        <button
-          type="button"
-          onClick={onClose}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-300"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
-};
-
-const MaintenanceRequestsTable = ({
-  requests,
-  onUpdateStatus,
-  onAssignContractor,
-  onCostChange,
-  contractors,
-}) => {
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full table-auto border-collapse border border-gray-200 text-sm sm:text-base">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border px-4 py-2">Request Title</th>
-            <th className="border px-4 py-2">Property</th>
-            <th className="border px-4 py-2">Tenant</th>
-            <th className="border px-4 py-2">Request Date</th>
-            <th className="border px-4 py-2">Status</th>
-            <th className="border px-4 py-2">Priority</th>
-            <th className="border px-4 py-2">Cost</th>
-            <th className="border px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.map((request) => (
-            <tr key={request.id}>
-              <td className="border px-4 py-2">{request.title}</td>
-              <td className="border px-4 py-2">{request.property}</td>
-              <td className="border px-4 py-2">{request.tenant || "N/A"}</td>
-              <td className="border px-4 py-2">{request.date}</td>
-              <td className="border px-4 py-2">{request.status}</td>
-              <td className="border px-4 py-2">{request.priority}</td>
-              <td className="border px-4 py-2">
-                <input
-                  type="number"
-                  value={request.cost}
-                  onChange={(e) => onCostChange(request.id, e.target.value)}
-                  className="w-20 px-2 py-1 border rounded"
-                />
-              </td>
-              <td className="border px-4 py-2 space-y-2">
-                <div className="flex flex-col sm:flex-row sm:space-x-2 gap-4 sm:gap-0">
-                  <button
-                    className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                    onClick={() => onUpdateStatus(request.id, "In Progress")}
-                  >
-                    In Progress
-                  </button>
-                  <button
-                    className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                    onClick={() => onUpdateStatus(request.id, "Completed")}
-                  >
-                    Completed
-                  </button>
-                </div>
-                <AssignContractors
-                  contractors={contractors}
-                  onAssign={(contractorId) =>
-                    onAssignContractor(request.id, contractorId)
-                  }
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-const AssignContractors = ({ contractors, onAssign }) => {
-  return (
-    <div className="text-center">
-      <select
-        onChange={(e) => onAssign(e.target.value)}
-        className="w-full sm:w-auto mt-2 px-4 py-1 border rounded"
-      >
-        <option value="">Assign Contractor</option>
-        {contractors.map((contractor) => (
-          <option key={contractor.id} value={contractor.id}>
-            {contractor.name}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
-export default MaintenancePage;
+export default MaintenanceRequests;

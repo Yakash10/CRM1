@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Dialog, Menu } from "@headlessui/react";
-import { Plus, MoreVertical, Edit, Trash2 } from "lucide-react";
+import {
+  Plus,
+  MoreVertical,
+  Edit,
+  Trash2,
+  MapPin,
+} from "lucide-react";
 
 export default function BrokerAgentPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -113,9 +119,7 @@ export default function BrokerAgentPage() {
   };
 
   const handleDelete = (index) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this broker?"
-    );
+    const confirmDelete = window.confirm("Are you sure you want to delete this broker?");
     if (confirmDelete) {
       setBrokers(brokers.filter((_, i) => i !== index));
     }
@@ -128,47 +132,46 @@ export default function BrokerAgentPage() {
 
   return (
     <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <h1 className="font-semibold text-lg p-3">Brokers & Agent</h1>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search brokers & agents..."
-          className="border rounded px-4 py-2 shadow-sm"
-        />
+      <h1 className="font-bold text-2xl text-gray-800 mb-6">
+        Brokers & Agents
+      </h1>
+
+      {/* Top Controls */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div className="flex gap-3 w-full md:w-auto">
+          <input
+            type="text"
+            placeholder="Search brokers & agents..."
+            className="border rounded px-4 py-2 shadow-sm w-full md:w-64"
+          />
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="border px-3 py-2 rounded shadow-sm text-sm"
+          >
+            <option value="All">All Types</option>
+            <option value="Broker">Broker</option>
+            <option value="Agent">Agent</option>
+            <option value="Internal">Internal</option>
+          </select>
+        </div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-purple-600 text-white px-4 py-2 rounded flex items-center gap-2"
+          className="bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700 flex items-center gap-2"
         >
           <Plus size={18} /> Add Broker/Agent
         </button>
       </div>
 
-      {/* Filter */}
-      {/* <div className="bg-white p-4 rounded mb-6">
-        <div className="font-semibold mb-2">Filters</div>
-        <label className="block text-sm font-medium mb-1">Type</label>
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-          className="w-full sm:w-64 border px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-        >
-          <option>All</option>
-          <option>Broker</option>
-          <option>Agent</option>
-          <option>Internal</option>
-        </select>
-      </div> */}
-
       {/* Cards Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {filteredBrokers.map((broker, idx) => (
-          <div key={idx} className="bg-white rounded shadow p-4 relative">
-            <Menu as="div" className="absolute right-4 top-4 text-right">
+          <div key={idx} className="bg-white rounded-xl shadow-md p-5 relative">
+            <Menu as="div" className="absolute right-4 top-4 text-right z-10">
               <Menu.Button className="p-1 hover:bg-gray-100 rounded-full">
                 <MoreVertical size={20} />
               </Menu.Button>
-              <Menu.Items className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-10">
+              <Menu.Items className="absolute right-0 mt-2 w-44 bg-white border rounded shadow-md z-20">
                 <div className="px-4 py-2 font-semibold text-sm text-gray-700">
                   Actions
                 </div>
@@ -180,7 +183,7 @@ export default function BrokerAgentPage() {
                         active ? "bg-gray-100" : ""
                       }`}
                     >
-                      <Edit size={16} /> Edit Broker
+                      <Edit size={16} /> Edit
                     </button>
                   )}
                 </Menu.Item>
@@ -192,7 +195,7 @@ export default function BrokerAgentPage() {
                         active ? "bg-gray-100" : ""
                       }`}
                     >
-                      <Trash2 size={16} /> Delete Broker
+                      <Trash2 size={16} /> Delete
                     </button>
                   )}
                 </Menu.Item>
@@ -205,16 +208,21 @@ export default function BrokerAgentPage() {
                 className="w-20 h-20 rounded-full mb-2"
                 alt={broker.name}
               />
-              <span className="bg-purple-500 text-white text-xs px-3 w-[100px] text-center py-1 rounded-full mb-2">
+              <span className="bg-purple-500 text-white w-[100px] text-center text-xs px-3 py-1 rounded-full mb-2">
                 {broker.type}
               </span>
-              <div className="text-lg font-semibold">{broker.name}</div>
-              <div className="text-sm text-gray-500">{broker.location}</div>
-              <div className="text-sm text-gray-600 mt-2">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                {broker.name}
+                <span className="flex items-center text-sm text-gray-500 gap-1">
+                  <MapPin size={14} className="text-gray-400" />
+                  {broker.location}
+                </span>
+              </div>
+              <div className="text-sm text-gray-600 mt-2 space-y-1">
+                <div className="flex items-center  gap-2">
                   <span>📧</span> {broker.email}
                 </div>
-                <div className="flex items-center mt-2 gap-2">
+                <div className="flex items-center gap-2">
                   <span>📞</span> {broker.phone}
                 </div>
               </div>
@@ -237,7 +245,7 @@ export default function BrokerAgentPage() {
         ))}
       </div>
 
-      {/* Dialog Modal */}
+      {/* Modal Dialog */}
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -320,7 +328,7 @@ export default function BrokerAgentPage() {
             </button>
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-purple-600 text-white rounded"
+              className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
             >
               Save
             </button>

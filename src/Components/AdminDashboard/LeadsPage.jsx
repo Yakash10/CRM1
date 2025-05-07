@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { MoreVertical, Edit2, Trash2 } from "lucide-react";
-
-const getInitials = (name) =>
-  name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+import {
+  MoreVertical,
+  Edit2,
+  Trash2,
+  Send,
+  Voicemail,
+  Building2,
+  History,
+} from "lucide-react";
 
 const LeadsPage = () => {
   const [leads, setLeads] = useState([
@@ -51,6 +52,7 @@ const LeadsPage = () => {
     },
   ]);
 
+  const [statusFilter, setStatusFilter] = useState("All");
   const [newLead, setNewLead] = useState({
     name: "",
     email: "",
@@ -131,11 +133,27 @@ const LeadsPage = () => {
     }
   };
 
+  const filteredLeads =
+    statusFilter === "All"
+      ? leads
+      : leads.filter((lead) => lead.status === statusFilter);
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="p-3 text-lg font-semibold">Lead Management</h1>
-      <div className="flex justify-between mb-4">
-        <input placeholder="Search leads..." className="border p-2 rounded" />
+
+      {/* Filter + Add Lead */}
+      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border p-2 rounded max-w-xs"
+        >
+          <option value="All">All Statuses</option>
+          <option value="New">New</option>
+          <option value="Contacted">Contacted</option>
+          <option value="Qualified">Qualified</option>
+        </select>
         <button
           onClick={() => {
             resetForm();
@@ -147,8 +165,9 @@ const LeadsPage = () => {
         </button>
       </div>
 
+      {/* Lead Cards */}
       <div className="grid md:grid-cols-3 gap-4">
-        {leads.map((lead, index) => (
+        {filteredLeads.map((lead, index) => (
           <div key={index} className="bg-white p-4 rounded-lg shadow relative">
             <div className="absolute top-3 right-3">
               <button
@@ -192,10 +211,18 @@ const LeadsPage = () => {
               </div>
             </div>
             <div className="text-sm text-gray-600 space-y-2 mt-2">
-              <p>📧 {lead.email}</p>
-              <p>📞 {lead.phone}</p>
-              <p>🏘️ {lead.propertyInterest}</p>
-              <p>📅 Last activity: {lead.lastActivity}</p>
+              <p className="flex items-center gap-2">
+                <Send size={16} /> {lead.email}
+              </p>
+              <p className="flex items-center gap-2">
+                <Voicemail size={16} /> {lead.phone}
+              </p>
+              <p className="flex items-center gap-2">
+                <Building2 size={16} /> {lead.propertyInterest}
+              </p>
+              <p className="flex items-center gap-2">
+                <History size={16} /> Last activity: {lead.lastActivity}
+              </p>
             </div>
             <div className="flex justify-between items-center mt-4">
               <span
@@ -213,6 +240,7 @@ const LeadsPage = () => {
         ))}
       </div>
 
+      {/* Popup Form */}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
