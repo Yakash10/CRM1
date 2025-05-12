@@ -9,6 +9,10 @@ import {
 import "./App.css";
 
 
+
+// import Login from "./Components/Authentication/Login"
+
+
 // Admin dashboard 
 import AdminLayout from "./Components/AdminDashboard/AdminLayout";
 import Admin from "./Components/AdminDashboard/Admin";
@@ -172,6 +176,7 @@ function App() {
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/builder" element={<BuilderInnerPage />} />
         <Route path="/clientbooking" element={<ClientBookingPage />} />
+        {/* <Route path="/login" element={<Login />} /> */}
       
 
         {/* Admin Layout Route */}

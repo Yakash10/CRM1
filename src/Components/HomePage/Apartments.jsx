@@ -5,7 +5,7 @@ const properties = [
   {
     id: 1,
     image:
-      "https://media.equityapartments.com/images/c_crop,x_0,y_0,w_1920,h_1080/c_fill,w_1920,h_1080/q_80/4011-1/moda-apartments-exterior.jpg",
+      "https://thumbs.dreamstime.com/b/apartment-building-architectural-details-modern-39732665.jpg",
     type: "apartment",
     buildername: "Casagrand",
     bed: 3,
@@ -35,7 +35,7 @@ const properties = [
   {
     id: 4,
     image:
-      "https://media.equityapartments.com/images/c_crop,x_0,y_0,w_1920,h_1080/c_fill,w_1920,h_1080/q_80/4011-1/moda-apartments-exterior.jpg",
+      "https://thumbs.dreamstime.com/b/apartment-building-architectural-details-modern-39732665.jpg",
     type: "land",
     buildername: "Casagrand",
     bed: 0,
@@ -55,7 +55,7 @@ const properties = [
   {
     id: 6,
     image:
-      "https://patch.com/img/cdn20/users/24938404/20210624/040857/3-westchester-apartments-flight-facade-evening-4-copy___24160855313.jpg",
+      "https://thumbs.dreamstime.com/b/apartment-building-architectural-details-modern-39732665.jpg",
     type: "villa",
     buildername: "Casagrand",
     bed: 5,

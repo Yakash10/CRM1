@@ -16,6 +16,12 @@ const defaultCards = [
     label: "Recently viewed",
     icon: cardimg2,
   },
+  {
+    id: 2,
+    count: 5,
+    label: "Recently viewed",
+    icon: cardimg2,
+  },
 ];
 
 const CardSection = ({

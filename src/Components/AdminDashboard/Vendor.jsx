@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, MoreVertical } from "lucide-react";
 
 const VendorsPage = () => {
   const [vendors, setVendors] = useState([
@@ -10,6 +10,8 @@ const VendorsPage = () => {
       rating: 4.5,
       areaOfService: "Downtown",
       specialties: ["Leak Repairs", "Pipe Installations"],
+      profile:
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
     },
     {
       name: "Electric Masters",
@@ -18,6 +20,18 @@ const VendorsPage = () => {
       rating: 4.8,
       areaOfService: "Uptown",
       specialties: ["Wiring", "Lighting Installation"],
+      profile:
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+    },
+    {
+      name: "Electric Masters",
+      category: "Electrician",
+      contact: "contact@electricmasters.com",
+      rating: 4.8,
+      areaOfService: "Uptown",
+      specialties: ["Wiring", "Lighting Installation"],
+      profile:
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
     },
   ]);
 
@@ -28,9 +42,12 @@ const VendorsPage = () => {
     rating: "",
     areaOfService: "",
     specialties: "",
+    profile: "",
   });
+
   const [editIndex, setEditIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [menuOpenIndex, setMenuOpenIndex] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,7 +63,8 @@ const VendorsPage = () => {
       form.category &&
       form.contact &&
       form.rating &&
-      form.areaOfService
+      form.areaOfService &&
+      form.profile
     ) {
       const newVendor = {
         ...form,
@@ -69,6 +87,7 @@ const VendorsPage = () => {
         rating: "",
         areaOfService: "",
         specialties: "",
+        profile: "",
       });
       setEditIndex(null);
       setShowForm(false);
@@ -83,20 +102,22 @@ const VendorsPage = () => {
       rating: vendors[index].rating.toString(),
       areaOfService: vendors[index].areaOfService,
       specialties: vendors[index].specialties.join(", "),
+      profile: vendors[index].profile,
     });
     setEditIndex(index);
     setShowForm(true);
+    setMenuOpenIndex(null);
   };
 
   const handleDelete = (index) => {
     const updatedVendors = [...vendors];
     updatedVendors.splice(index, 1);
     setVendors(updatedVendors);
+    setMenuOpenIndex(null);
   };
 
   return (
     <div className="p-4 md:p-6 lg:p-10 space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h2 className="text-lg md:text-xl font-semibold">Vendors List</h2>
         <button
@@ -108,6 +129,7 @@ const VendorsPage = () => {
               rating: "",
               areaOfService: "",
               specialties: "",
+              profile: "",
             });
             setEditIndex(null);
             setShowForm(true);
@@ -118,45 +140,67 @@ const VendorsPage = () => {
         </button>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm border">
-          <thead className="bg-gray-100 text-xs sm:text-sm">
-            <tr>
-              <th className="p-2 border">Vendor Name</th>
-              <th className="p-2 border">Category</th>
-              <th className="p-2 border">Contact</th>
-              <th className="p-2 border">Rating</th>
-              <th className="p-2 border">Area of Service</th>
-              <th className="p-2 border">Specialties</th>
-              <th className="p-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vendors.map((vendor, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="p-2 border">{vendor.name}</td>
-                <td className="p-2 border">{vendor.category}</td>
-                <td className="p-2 border">{vendor.contact}</td>
-                <td className="p-2 border">{vendor.rating}</td>
-                <td className="p-2 border">{vendor.areaOfService}</td>
-                <td className="p-2 border">{vendor.specialties.join(", ")}</td>
-                <td className="p-2 border">
-                  <div className="flex gap-2 justify-center">
-                    <Pencil
+      {/* Cards View */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {vendors.map((vendor, index) => (
+          <div
+            key={index}
+            className="relative border rounded-lg p-4 shadow-md bg-white space-y-2"
+          >
+            <div className="flex items-center gap-4">
+              <img
+                src={vendor.profile}
+                alt={vendor.name}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+              <div>
+                <h3 className="font-semibold text-lg">{vendor.name}</h3>
+                <p className="text-sm text-gray-600">{vendor.category}</p>
+              </div>
+              <div className="ml-auto relative">
+                <button
+                  onClick={() =>
+                    setMenuOpenIndex(menuOpenIndex === index ? null : index)
+                  }
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <MoreVertical size={20} />
+                </button>
+                {menuOpenIndex === index && (
+                  <div className="absolute right-0 mt-2 w-32 bg-white border shadow-lg rounded z-10">
+                    <button
                       onClick={() => handleEdit(index)}
-                      className="text-yellow-600 cursor-pointer w-4 h-4"
-                    />
-                    <Trash
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                    >
+                      <Pencil size={14} className="inline mr-2" />
+                      Edit
+                    </button>
+                    <button
                       onClick={() => handleDelete(index)}
-                      className="text-red-600 cursor-pointer w-4 h-4"
-                    />
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 text-red-600"
+                    >
+                      <Trash size={14} className="inline mr-2" />
+                      Delete
+                    </button>
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                )}
+              </div>
+            </div>
+            <p>
+              <span className="font-medium">Contact:</span> {vendor.contact}
+            </p>
+            <p>
+              <span className="font-medium">Rating:</span> {vendor.rating}
+            </p>
+            <p>
+              <span className="font-medium">Area:</span> {vendor.areaOfService}
+            </p>
+            <p>
+              <span className="font-medium">Specialties:</span>{" "}
+              {vendor.specialties.join(", ")}
+            </p>
+          </div>
+        ))}
       </div>
 
       {/* Modal Form */}
@@ -214,6 +258,14 @@ const VendorsPage = () => {
                 name="specialties"
                 placeholder="Specialties (comma separated)"
                 value={form.specialties}
+                onChange={handleInputChange}
+                className="border p-2 rounded w-full"
+              />
+              <input
+                type="text"
+                name="profile"
+                placeholder="Profile Image URL"
+                value={form.profile}
                 onChange={handleInputChange}
                 className="border p-2 rounded w-full"
               />

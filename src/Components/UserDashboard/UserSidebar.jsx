@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import sidebar1 from "../AdminDashboard/Assets/sidebar1.png";
 import sidebar2 from "../AdminDashboard/Assets/sidebar2.png";
@@ -13,6 +13,19 @@ import logout from "../AdminDashboard/Assets/logout.png";
 import sidebarlogo from "../AdminDashboard/Assets/sidebarlogo.png";
 
 const UserSidebar = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isActive = (path) =>
+    location.pathname === path
+      ? "text-blue-500 font-medium"
+      : "text-gray-700 hover:text-blue-500";
+
+  const handleLogout = () => {
+    // Perform logout actions here (e.g., clearing localStorage/session if needed)
+    navigate("/clientbooking");
+  };
+
   return (
     <div className="hidden h-screen lg:flex w-64 bg-white shadow-md flex-col p-4">
       {/* Logo Section */}
@@ -25,7 +38,9 @@ const UserSidebar = () => {
         <ul className="space-y-6">
           <Link
             to="/dashboard"
-            className="flex items-center text-blue-500 font-medium cursor-pointer"
+            className={`flex items-center cursor-pointer ${isActive(
+              "/dashboard"
+            )}`}
           >
             <img src={sidebar1} alt="Dashboard" className="w-5 h-5 mr-3" />
             Dashboard
@@ -33,7 +48,9 @@ const UserSidebar = () => {
 
           <Link
             to="/userproperties"
-            className="flex items-center text-gray-700 hover:text-blue-500 cursor-pointer"
+            className={`flex items-center cursor-pointer ${isActive(
+              "/userproperties"
+            )}`}
           >
             <img className="w-5 h-5 mr-3" src={sidebar2} alt="Properties" />
             Properties
@@ -41,7 +58,9 @@ const UserSidebar = () => {
 
           <Link
             to="/savedproperties"
-            className="flex items-center text-gray-700 hover:text-blue-500 cursor-pointer"
+            className={`flex items-center cursor-pointer ${isActive(
+              "/savedproperties"
+            )}`}
           >
             <img
               className="w-5 h-5 mr-3"
@@ -53,7 +72,9 @@ const UserSidebar = () => {
 
           <Link
             to="/reports"
-            className="flex items-center text-gray-700 hover:text-blue-500 cursor-pointer"
+            className={`flex items-center cursor-pointer ${isActive(
+              "/reports"
+            )}`}
           >
             <img className="w-5 h-5 mr-3" src={sidebar4} alt="Reports" />
             Reports
@@ -61,7 +82,9 @@ const UserSidebar = () => {
 
           <Link
             to="/clientpage"
-            className="flex items-center text-gray-700 hover:text-blue-500 cursor-pointer"
+            className={`flex items-center cursor-pointer ${isActive(
+              "/clientpage"
+            )}`}
           >
             <img className="w-5 h-5 mr-3" src={sidebar5} alt="Clients" />
             Clients
@@ -69,7 +92,9 @@ const UserSidebar = () => {
 
           <Link
             to="/usercalendar"
-            className="flex items-center text-gray-700 hover:text-blue-500 cursor-pointer"
+            className={`flex items-center cursor-pointer ${isActive(
+              "/usercalendar"
+            )}`}
           >
             <img className="w-5 h-5 mr-3" src={sidebar6} alt="Calendar" />
             Calendar
@@ -81,7 +106,9 @@ const UserSidebar = () => {
       <div className="mt-auto space-y-6">
         <Link
           to="/settings"
-          className="flex items-center text-gray-700 hover:text-blue-500 cursor-pointer"
+          className={`flex items-center cursor-pointer ${isActive(
+            "/settings"
+          )}`}
         >
           <img className="w-5 h-5 mr-3" src={setting} alt="Settings" />
           Settings
@@ -89,19 +116,19 @@ const UserSidebar = () => {
 
         <Link
           to="/help"
-          className="flex items-center text-gray-700 hover:text-blue-500 cursor-pointer"
+          className={`flex items-center cursor-pointer ${isActive("/help")}`}
         >
           <img className="w-5 h-5 mr-3" src={help} alt="Help" />
           Help
         </Link>
 
-        <Link
-          to="/logout"
+        <div
+          onClick={handleLogout}
           className="flex items-center text-red-500 hover:text-red-700 cursor-pointer"
         >
           <img className="w-5 h-5 mr-3" src={logout} alt="Logout" />
           Logout
-        </Link>
+        </div>
       </div>
     </div>
   );
