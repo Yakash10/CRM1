@@ -58,7 +58,7 @@ const SavedProperties = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Saved Properties</h1>
+      <h1 className="text-xl font-semibold mb-4">Saved Properties</h1>
 
       {/* Sort Dropdown */}
       <div className="mb-6">
@@ -99,7 +99,7 @@ const SavedProperties = () => {
                 {property.liked ? <Heart fill="currentColor" /> : <HeartIcon />}
               </button>
 
-              <h2 className="text-lg font-bold mb-3">{property.name}</h2>
+              <h2 className="text-lg mb-3">{property.name}</h2>
 
               {/* Single line icons row */}
               <div className="flex items-center gap-4 text-sm text-gray-700">

@@ -23,14 +23,14 @@ const ReportsPage = () => {
       property: "Radiant Villas",
     },
     {
-      id: 1,
-      date: "2025-04-20",
+      id: 3,
+      date: "2025-04-19",
       type: "Application",
-      status: "Approved",
-      reportedBy: "John Doe",
-      profileImage: "https://i.pravatar.cc/100?img=1",
-      description: "Application for Flat #12A",
-      property: "Casagrand Athens",
+      status: "Rejected",
+      reportedBy: "Mark Lee",
+      profileImage: "https://i.pravatar.cc/100?img=3",
+      description: "Application for Flat #22B",
+      property: "Relator Heights",
     },
   ]);
 
@@ -65,7 +65,7 @@ const ReportsPage = () => {
 
   const handleAddReport = () => {
     const newId = reports.length + 1;
-    const defaultImage = "https://i.pravatar.cc/100"; // fallback image
+    const defaultImage = "https://i.pravatar.cc/100";
     setReports([
       ...reports,
       {
@@ -86,34 +86,40 @@ const ReportsPage = () => {
     setShowPopup(false);
   };
 
+  const statusColor = {
+    Approved: "border-green-500",
+    Pending: "border-yellow-500",
+    Rejected: "border-red-500",
+    Resolved: "border-blue-500",
+  };
+
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold">Activity Reports</h1>
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Activity Reports</h1>
         <button
           onClick={() => setShowPopup(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
         >
           + Add Report
         </button>
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      <div className="grid md:grid-cols-5 gap-4 bg-white p-4 rounded-lg shadow mb-6">
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="p-2 border rounded"
+          className="border p-2 rounded-md w-full"
         >
           <option value="All">All Types</option>
           <option value="Application">Application</option>
           <option value="Inquiry">Inquiry</option>
         </select>
-
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="p-2 border rounded"
+          className="border p-2 rounded-md w-full"
         >
           <option value="All">All Status</option>
           <option value="Approved">Approved</option>
@@ -121,30 +127,28 @@ const ReportsPage = () => {
           <option value="Rejected">Rejected</option>
           <option value="Resolved">Resolved</option>
         </select>
-
         <input
           type="date"
           value={fromDate}
           onChange={(e) => setFromDate(e.target.value)}
-          className="p-2 border rounded"
+          className="border p-2 rounded-md w-full"
         />
         <input
           type="date"
           value={toDate}
           onChange={(e) => setToDate(e.target.value)}
-          className="p-2 border rounded"
+          className="border p-2 rounded-md w-full"
         />
-
         <div className="flex gap-2">
           <button
             onClick={() => handleDownload("PDF")}
-            className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
+            className="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700"
           >
             PDF
           </button>
           <button
             onClick={() => handleDownload("CSV")}
-            className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700"
+            className="bg-green-600 text-white px-3 py-2 rounded-md hover:bg-green-700"
           >
             CSV
           </button>
@@ -153,51 +157,49 @@ const ReportsPage = () => {
 
       {/* Reports */}
       {filteredReports.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredReports.map((report) => (
             <div
               key={report.id}
-              className="border rounded-lg p-4 shadow hover:shadow-md transition"
+              className={`border-l-4 p-4 bg-white rounded-lg shadow hover:shadow-lg transition duration-300 ${
+                statusColor[report.status] || "border-gray-400"
+              }`}
             >
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-4 mb-4">
                 <img
                   src={report.profileImage}
                   alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-12 h-12 rounded-full object-cover border"
                 />
                 <div>
-                  <div className="font-semibold">{report.reportedBy}</div>
-                  <div className="text-sm text-gray-500">{report.date}</div>
+                  <h3 className="font-semibold text-lg">{report.reportedBy}</h3>
+                  <p className="text-gray-500 text-sm">{report.date}</p>
                 </div>
               </div>
-              <div className="mb-1">
-                <span className="font-semibold">Type: </span>
-                {report.type}
-              </div>
-              <div className="mb-1">
-                <span className="font-semibold">Status: </span>
-                {report.status}
-              </div>
-              <div className="mb-1">
-                <span className="font-semibold">Property: </span>
-                {report.property}
-              </div>
-              <div>
-                <span className="font-semibold">Description: </span>
-                {report.description}
-              </div>
+              <p>
+                <strong>Type:</strong> {report.type}
+              </p>
+              <p>
+                <strong>Status:</strong> {report.status}
+              </p>
+              <p>
+                <strong>Property:</strong> {report.property}
+              </p>
+              <p className="mt-2 text-gray-700">
+                <strong>Description:</strong> {report.description}
+              </p>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center text-gray-500 mt-6">No reports found.</div>
+        <div className="text-center text-gray-500 mt-10">No reports found.</div>
       )}
 
-      {/* Add Report Popup */}
+      {/* Popup Form */}
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Add New Report</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+            <h2 className="text-2xl font-bold mb-4">Add New Report</h2>
             <div className="space-y-4">
               <input
                 type="date"
@@ -205,14 +207,14 @@ const ReportsPage = () => {
                 onChange={(e) =>
                   setNewReport({ ...newReport, date: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-md"
               />
               <select
                 value={newReport.type}
                 onChange={(e) =>
                   setNewReport({ ...newReport, type: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-md"
               >
                 <option value="Application">Application</option>
                 <option value="Inquiry">Inquiry</option>
@@ -222,7 +224,7 @@ const ReportsPage = () => {
                 onChange={(e) =>
                   setNewReport({ ...newReport, status: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-md"
               >
                 <option value="Approved">Approved</option>
                 <option value="Pending">Pending</option>
@@ -236,7 +238,7 @@ const ReportsPage = () => {
                 onChange={(e) =>
                   setNewReport({ ...newReport, reportedBy: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-md"
               />
               <input
                 type="url"
@@ -245,7 +247,7 @@ const ReportsPage = () => {
                 onChange={(e) =>
                   setNewReport({ ...newReport, profileImage: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-md"
               />
               <input
                 type="text"
@@ -254,7 +256,7 @@ const ReportsPage = () => {
                 onChange={(e) =>
                   setNewReport({ ...newReport, property: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-md"
               />
               <textarea
                 placeholder="Description"
@@ -262,18 +264,18 @@ const ReportsPage = () => {
                 onChange={(e) =>
                   setNewReport({ ...newReport, description: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-md"
               />
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setShowPopup(false)}
-                  className="px-4 py-2 border rounded hover:bg-gray-100"
+                  className="px-4 py-2 border rounded-md hover:bg-gray-100"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddReport}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 >
                   Add
                 </button>

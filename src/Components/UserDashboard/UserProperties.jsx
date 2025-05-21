@@ -73,14 +73,12 @@ const PropertiesPage = () => {
               <span>📅 {property.availableDate}</span>
             </div>
 
-            <div className="text-base font-semibold text-black mb-2">
+            <div className="text-base  text-gray-600 mb-2">
               ₹ {property.price}{" "}
               <span className="text-sm text-gray-600">
                 ( ₹ {property.pricePerSqFt} per Sq.Ft. )
               </span>
             </div>
-
-           
           </div>
         </div>
       ))}

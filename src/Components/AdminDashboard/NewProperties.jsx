@@ -42,7 +42,7 @@ const NewProperties = () => {
             />
             <div className="flex-1 px-4">
               <p className="text-sm font-medium">{property.name}</p>
-              <p className="text-lg font-bold">{property.price}</p>
+              <p className="">{property.price}</p>
             </div>
           </div>
         ))}

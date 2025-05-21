@@ -75,10 +75,10 @@ const Card = () => {
             </div>
 
             {/* Title */}
-            <h2 className="text-lg font-semibold mt-2">{title}</h2>
+            <h2 className="text-lg text-gray-600  mt-2">{title}</h2>
 
             {/* Value */}
-            <h3 className="text-2xl font-bold mt-1">{value}</h3>
+            <h3 className="text-lg text-gray-600  mt-1">{value}</h3>
 
             {/* Percentage Change */}
             <p

@@ -190,7 +190,7 @@ const UserClients = () => {
                 className="w-14 h-14 rounded-full object-cover"
               />
               <div>
-                <p className="text-lg font-semibold">{client.name}</p>
+                <p className="text-lg ">{client.name}</p>
                 <p className="text-sm text-gray-500">{client.status}</p>
               </div>
             </div>

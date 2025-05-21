@@ -55,7 +55,7 @@ const CardSection = ({
             <div className="bg-blue-100 p-2 rounded-lg">
               <img src={card.icon} alt={card.label} className="w-6 h-6" />
             </div>
-            <p className="text-xl font-semibold">{card.count}</p>
+            <p className="text-lg">{card.count}</p>
             <p className="text-gray-500">{card.label}</p>
           </div>
         ))}

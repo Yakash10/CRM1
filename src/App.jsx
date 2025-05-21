@@ -10,7 +10,6 @@ import "./App.css";
 
 
 
-// import Login from "./Components/Authentication/Login"
 
 
 // Admin dashboard 
@@ -37,8 +36,6 @@ import FeatureProperties from "./Components/HomePage/FeatureProperties";
 import FloorPlan from "./Components/HomePage/FloorPlan";
 import Review from "./Components/HomePage/Review";
 import Footer from "./Components/HomePage/Footer";
-// import Task from "./Components/HomePage/Task";
-// import Leads from "./Components/HomePage/Leads";
 
 
 // Property Inner Page Components
@@ -86,8 +83,6 @@ import ClientNavbar from "./Components/ClientBookingPage/ClientNavbar";
 // import ClientHighlights from "./Components/ClientBookingPage/ClientHighlights";
 import MainContent from "./Components/ClientBookingPage/MainContent";
 import ClientFooter from "./Components/ClientBookingPage/ClientFooter";
-// import VendorPage from "./Components/HomePage/VendorPage";
-// import AgentBrokersPage from "./Components/HomePage/AgentBrokersPage";
 
 
 
@@ -130,10 +125,7 @@ function LandingPage() {
       <FloorPlan />
       <Review />
       <Footer />
-      {/* <Task /> */}
-      {/* <Leads />
-      <VendorPage />
-      <AgentBrokersPage/> */}
+     
     </>
   );
 }

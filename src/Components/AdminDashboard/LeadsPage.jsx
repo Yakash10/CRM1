@@ -206,7 +206,7 @@ const LeadsPage = () => {
                 className="w-10 h-10 rounded-full object-cover"
               />
               <div>
-                <h3 className="text-lg font-semibold">{lead.name}</h3>
+                <h3 className="text-lg">{lead.name}</h3>
                 <p className="text-sm text-gray-500">{lead.source}</p>
               </div>
             </div>

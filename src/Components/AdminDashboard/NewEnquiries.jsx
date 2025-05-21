@@ -47,7 +47,7 @@ export default function NewEnquiries() {
               className="w-10 h-10 rounded-full"
             />
             <div>
-              <p className="font-semibold">{enquiry.name}</p>
+              <p className="font-normal">{enquiry.name}</p>
               <p className="text-gray-600 text-sm">{enquiry.message}</p>
             </div>
           </div>

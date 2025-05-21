@@ -51,7 +51,7 @@ export default function DashboardStats() {
             </h3>
           </div>
 
-          <p className="text-2xl font-bold mt-2">{stat.value}</p>
+          <p className="text-xl text-gray-600 mt-2">{stat.value}</p>
           <div className="border mt-2"></div>
           <div className="mt-2 text-sm flex items-center">
             <span className={`${stat.changeColor} font-semibold`}>

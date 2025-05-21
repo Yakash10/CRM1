@@ -1,48 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import whoweare from "./Assets/whoweare.png";
 
 const Whoweare = () => {
   const [showMore, setShowMore] = useState(false);
-  const [isInView, setIsInView] = useState(false);
-  const ref = useRef(null);
 
-  // Function to toggle the 'Show more' content
+  // Toggle 'Show more' content
   const handleToggle = () => {
     setShowMore(!showMore);
   };
 
-  // Intersection Observer to detect when component comes into view
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          // Reset animation after it has finished
-          setTimeout(() => setIsInView(false), 1000); // 1000ms to match the animation duration
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
-    };
-  }, []);
-
   return (
     <div className="w-full max-w-7xl mt-20 px-6 md:px-12 mx-auto">
-      <div
-        ref={ref}
-        className={`flex flex-col md:flex-row-reverse items-center gap-20 text-center md:text-left transition-all duration-1000 ${
-          isInView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-20"
-        }`}
-      >
+      <div className="flex flex-col md:flex-row-reverse items-center gap-20 text-center md:text-left">
         {/* Left Section (Image) */}
         <div className="md:w-1/2">
           <img
@@ -75,7 +44,7 @@ const Whoweare = () => {
 
           {/* Extra Content Toggle */}
           {showMore && (
-            <div className="mt-4 text-gray-700 transition-all duration-300">
+            <div className="mt-4 text-gray-700">
               <p>
                 Discover luxurious amenities, sustainable architecture, and
                 thoughtfully designed spaces that reflect modern lifestyles.
