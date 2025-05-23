@@ -1,30 +1,68 @@
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const [showSignup, setShowSignup] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
 
+  // Login form states
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
+  // Signup form states
   const [signupUsername, setSignupUsername] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+  const [signupCompanyName, setSignupCompanyName] = useState("");
+  const [signupRole, setSignupRole] = useState("");
+
+  const [message, setMessage] = useState("");
 
   const images = [
     {
-      url: "https://images.ottplay.com/images/ajith-kumar-in-good-bad-ugly-1723179833.jpg",
-      text: `<a href="https://example.com" target="_blank">Explore the Universe with GBU Mameey</a>`,
+      url: "https://media.istockphoto.com/id/488120139/photo/modern-real-estate.jpg?s=612x612&w=0&k=20&c=88jk1VLSoYboMmLUx173sHs_XrZ9pH21as8lC7WINQs=",
+      text: (
+        <a
+          href="https://example.com/apartments"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          Explore Luxury Apartments
+        </a>
+      ),
     },
     {
-      url: "https://tse2.mm.bing.net/th?id=OIF.VjNPH3uC8hm%2bSE6omK8ISA&pid=Api&P=0&h=180",
-      text: `<a href="https://www.youtube.com/watch?v=p4CSfe72Xrw" target="_blank">This is strictly made for fans</a>`,
+      url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/560522500.jpg?k=ff828719eaa74e28da1470e46ececabe7f4db037594ee0fd3d23a142084a7827&o=&hp=1",
+      text: (
+        <a
+          href="https://example.com/villas"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          Discover Premium Villas
+        </a>
+      ),
     },
     {
-      url: "https://tse1.mm.bing.net/th?id=OIP.ybwXgx1e9xD121k9zf_qOwHaFG&pid=Api&P=0&h=180",
-      text: `<a href="https://example.com/community" target="_blank">Join the GBU Mameey community</a>`,
+      url: "https://media.istockphoto.com/id/1026205392/photo/beautiful-luxury-home-exterior-at-twilight.jpg?s=612x612&w=0&k=20&c=HOCqYY0noIVxnp5uQf1MJJEVpsH_d4WtVQ6-OwVoeDo=",
+      text: (
+        <a
+          href="https://example.com/homes"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          Find Your Dream Home
+        </a>
+      ),
     },
   ];
 
@@ -36,13 +74,64 @@ export default function LoginPage() {
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("https://crm-pdgp.onrender.com/auth/login", {
+        identifier: loginEmail, // can be email or username
+        password: loginPassword,
+      });
+
+      const data = response.data;
+      setMessage("Login successful!");
+
+      if (data.user?.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/user");
+      }
+    } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
+      setMessage(error.response?.data?.msg || "Login failed. Please try again later.");
+    }
+  };
+
+  const handleSignup = async () => {
+    if (!signupEmail || !signupUsername || !signupPassword || !signupRole) {
+      setMessage("Email, Username, Password and Role are required");
+      return;
+    }
+
+    if (signupRole === "directBuilder" && !signupCompanyName) {
+      setMessage("Company Name is required for DirectBuilder role");
+      return;
+    }
+
+    try {
+      const response = await axios.post("https://crm-pdgp.onrender.com/auth/register", {
+        email: signupEmail,
+        username: signupUsername,
+        password: signupPassword,
+        role: signupRole,
+        phone: signupPhone || "", // optional, send empty string if not provided
+        companyName: signupRole === "directBuilder" ? signupCompanyName : "", // conditional
+      });
+
+      setMessage(response.data.msg);
+      // optionally clear inputs or redirect here
+    } catch (error) {
+      console.error("Signup error response:", error.response?.data);
+      setMessage(error.response?.data?.msg || "Signup failed. Please try again later.");
+    }
+  };
+
   return (
     <div className="flex min-h-screen justify-center items-center bg-gray-100 font-sans px-4 py-10">
-      <div className="relative w-full max-w-7xl h-[600px] bg-white shadow-2xl rounded-2xl overflow-hidden">
+      <div className="relative w-full max-w-7xl h-[700px] bg-white shadow-2xl rounded-2xl overflow-hidden">
         <div
           className={`absolute top-0 left-0 w-full h-full flex transition-transform duration-700 ${
             showSignup ? "-translate-x-1/2" : "translate-x-0"
@@ -52,16 +141,9 @@ export default function LoginPage() {
           <div className="w-1/2 flex flex-col justify-center items-center p-6 sm:p-10 bg-white">
             <div className="w-full max-w-md">
               <h1 className="text-4xl sm:text-5xl font-bold mb-2">Hi there!</h1>
-              <p className="mb-8 text-gray-500">Welcome to GBU world Mameey</p>
+              <p className="mb-8 text-gray-500">Welcome</p>
 
-              <button className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-3 text-gray-600 mb-4 hover:bg-gray-100 transition">
-                <img
-                  src="https://www.svgrepo.com/show/355037/google.svg"
-                  alt="Google Icon"
-                  className="h-5 w-5"
-                />
-                Log in with Google
-              </button>
+              {/* Removed Google login button here */}
 
               <div className="flex items-center my-4">
                 <div className="flex-grow border-t border-gray-300"></div>
@@ -69,50 +151,64 @@ export default function LoginPage() {
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
-              <input
-                type="email"
-                placeholder="Your email"
-                className="w-full border border-gray-300 rounded-md p-3 mb-4"
-                value={loginEmail}
-                onChange={(e) => setLoginEmail(e.target.value)}
-              />
-
-              <div className="relative mb-2">
+              <form onSubmit={handleLogin}>
                 <input
-                  type={showLoginPassword ? "text" : "password"}
-                  placeholder="Password"
-                  className="w-full border border-gray-300 rounded-md p-3 pr-10"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
+                  type="email"
+                  placeholder="Your email"
+                  className="w-full border border-gray-300 rounded-md p-3 mb-4"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  required
                 />
+
+                <div className="relative mb-2">
+                  <input
+                    type={showLoginPassword ? "text" : "password"}
+                    placeholder="Password"
+                    className="w-full border border-gray-300 rounded-md p-3 pr-10"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+
+                <div className="text-right text-sm mb-6">
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Forgot password?
+                  </a>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => setShowLoginPassword(!showLoginPassword)}
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
+                  type="submit"
+                  className="w-full bg-black text-white py-3 rounded-full mb-4 hover:opacity-90 transition"
                 >
-                  {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  Log In
                 </button>
-              </div>
-
-              <div className="text-right text-sm mb-6">
-                <a href="#" className="text-blue-500 hover:underline">
-                  Forgot password?
-                </a>
-              </div>
-
-              <button className="w-full bg-black text-white py-3 rounded-full mb-4 hover:opacity-90 transition">
-                Log In
-              </button>
+              </form>
 
               <p className="text-sm text-center">
                 Don’t have an account?{" "}
                 <button
                   className="text-blue-500 hover:underline"
-                  onClick={() => setShowSignup(true)}
+                  onClick={() => {
+                    setShowSignup(true);
+                    setMessage("");
+                  }}
                 >
                   Sign up
                 </button>
               </p>
+
+              {message && !showSignup && (
+                <p className="mt-4 text-center text-sm text-red-600">{message}</p>
+              )}
             </div>
           </div>
 
@@ -120,99 +216,140 @@ export default function LoginPage() {
           <div className="w-1/2 flex flex-col justify-center items-center p-6 sm:p-10 bg-white">
             <div className="w-full max-w-md">
               <h1 className="text-4xl sm:text-5xl font-bold mb-2">Join Us!</h1>
-              <p className="mb-8 text-gray-500">
-                Create your GBU Mameey account
-              </p>
+              <p className="mb-8 text-gray-500">Create an account to continue</p>
 
-              <button className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-3 text-gray-600 mb-4 hover:bg-gray-100 transition">
-                <img
-                  src="https://www.svgrepo.com/show/355037/google.svg"
-                  alt="Google Icon"
-                  className="h-5 w-5"
-                />
-                Sign up with Google
-              </button>
+              {/* Removed Google signup button here */}
 
-              <input
-                type="text"
-                placeholder="User Name"
-                className="w-full border border-gray-300 rounded-md p-3 mb-4"
-                value={signupUsername}
-                onChange={(e) => setSignupUsername(e.target.value)}
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full border border-gray-300 rounded-md p-3 mb-4"
-                value={signupEmail}
-                onChange={(e) => setSignupEmail(e.target.value)}
-              />
-
-              <div className="relative mb-6">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSignup();
+                }}
+              >
                 <input
-                  type={showSignupPassword ? "text" : "password"}
-                  placeholder="Password"
-                  className="w-full border border-gray-300 rounded-md p-3 pr-10"
-                  value={signupPassword}
-                  onChange={(e) => setSignupPassword(e.target.value)}
+                  type="text"
+                  placeholder="Username"
+                  className="w-full border border-gray-300 rounded-md p-3 mb-4"
+                  value={signupUsername}
+                  onChange={(e) => setSignupUsername(e.target.value)}
+                  required
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowSignupPassword(!showSignupPassword)}
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
-                >
-                  {showSignupPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
-                </button>
-              </div>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="w-full border border-gray-300 rounded-md p-3 mb-4"
+                  value={signupEmail}
+                  onChange={(e) => setSignupEmail(e.target.value)}
+                  required
+                />
+                <div className="relative mb-4">
+                  <input
+                    type={showSignupPassword ? "text" : "password"}
+                    placeholder="Password"
+                    className="w-full border border-gray-300 rounded-md p-3 pr-10"
+                    value={signupPassword}
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignupPassword(!showSignupPassword)}
+                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {showSignupPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+<div className="relative w-full mb-4">
+  <select
+    value={signupRole}
+    onChange={(e) => setSignupRole(e.target.value)}
+    required
+    className={`w-full border border-gray-300 rounded-md p-3 pr-10 appearance-none ${
+      signupRole === "" ? "text-gray-400" : "text-black"
+    }`}
+  >
+    <option value="" disabled hidden>
+      Select role
+    </option>
+    <option value="user">User</option>
+    <option value="admin">Admin</option>
+    <option value="directBuilder">Direct Builder</option>
+  </select>
+  
+  {/* Custom arrow */}
+  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+    <svg
+      className="w-4 h-4 text-gray-500"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+</div>
 
-              <button className="w-full bg-black text-white py-3 rounded-full mb-4 hover:opacity-90 transition">
-                Sign Up
-              </button>
+
+
+
+                <input
+                  type="tel"
+                  placeholder="Phone"
+                  className="w-full border border-gray-300 rounded-md p-3 mb-4"
+                  value={signupPhone}
+                  onChange={(e) => setSignupPhone(e.target.value)}
+                />
+
+                {signupRole === "directBuilder" && (
+                  <input
+                    type="text"
+                    placeholder="Company Name"
+                    className="w-full border border-gray-300 rounded-md p-3 mb-6"
+                    value={signupCompanyName}
+                    onChange={(e) => setSignupCompanyName(e.target.value)}
+                    required
+                  />
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full bg-black text-white py-3 rounded-full mb-4 hover:opacity-90 transition"
+                >
+                  Sign Up
+                </button>
+              </form>
 
               <p className="text-sm text-center">
                 Already have an account?{" "}
                 <button
                   className="text-blue-500 hover:underline"
-                  onClick={() => setShowSignup(false)}
+                  onClick={() => {
+                    setShowSignup(false);
+                    setMessage("");
+                  }}
                 >
                   Log in
                 </button>
               </p>
+
+              {message && showSignup && (
+                <p className="mt-4 text-center text-sm text-red-600">{message}</p>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Sliding Image Panel */}
-        <div
-          className="absolute top-0 right-0 w-1/2 h-full bg-cover bg-center text-white p-6 transition-all duration-700"
-          style={{
-            backgroundImage: `url(${images[currentImageIndex].url})`,
-          }}
-        >
-          <div className="flex flex-col justify-between h-full">
-            <div className="flex justify-end gap-4">
-              <button
-                className="border px-4 py-1 rounded-full text-sm hover:bg-white hover:text-black transition"
-                onClick={() => setShowSignup(true)}
-              >
-                Sign Up
-              </button>
-              <button className="px-4 py-1 rounded-full text-sm hover:bg-white hover:text-black transition">
-                Join Us
-              </button>
-            </div>
-            <div>
-              <h2
-                className="text-xl sm:text-2xl font-semibold max-w-xs mb-2 transition-opacity duration-700"
-                dangerouslySetInnerHTML={{
-                  __html: images[currentImageIndex].text,
-                }}
-              />
-            </div>
+        {/* Right side image + text */}
+        <div className="absolute top-0 right-0 w-1/2 h-full overflow-hidden rounded-r-2xl">
+          <img
+            src={images[currentImageIndex].url}
+            alt="Real Estate"
+            className="w-full h-full object-cover brightness-90"
+          />
+          <div className="absolute bottom-12 left-12 text-white text-lg sm:text-xl font-semibold">
+            {images[currentImageIndex].text}
           </div>
         </div>
       </div>

@@ -1,14 +1,8 @@
 import React, { useState } from "react";
 import { Dialog, Menu } from "@headlessui/react";
-import {
-  Plus,
-  MoreVertical,
-  Edit,
-  Trash2,
-  MapPin,
-} from "lucide-react";
+import { Plus, MoreVertical, Edit, Trash2, MapPin } from "lucide-react";
 
-export default function BrokerAgentPage() {
+export default function AgentPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -20,30 +14,33 @@ export default function BrokerAgentPage() {
       email: "sarah.williams@proppulse.com",
       phone: "(555) 123-4567",
       location: "New York, NY",
-      type: "Internal",
-      activeListings: 12,
+      selectType: "Internal",
+      ActiveListings: 12,
       closedDeals: 45,
-      avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
+      AvatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
+      commissionRate: 2.5,
     },
     {
       name: "John Smith",
       email: "john.smith@proppulse.com",
       phone: "(555) 987-6543",
       location: "San Francisco, CA",
-      type: "Agent",
-      activeListings: 8,
+      selectType: "Agent",
+      ActiveListings: 8,
       closedDeals: 37,
-      avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+      AvatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+      commissionRate: 3.0,
     },
     {
       name: "David Anderson",
       email: "david.anderson@proppulse.com",
       phone: "(555) 456-7890",
       location: "Chicago, IL",
-      type: "Broker",
-      activeListings: 15,
+      selectType: "Broker",
+      ActiveListings: 15,
       closedDeals: 62,
-      avatarUrl: "https://randomuser.me/api/portraits/men/79.jpg",
+      AvatarUrl: "https://randomuser.me/api/portraits/men/79.jpg",
+      commissionRate: 2.8,
     },
   ]);
 
@@ -52,10 +49,11 @@ export default function BrokerAgentPage() {
     email: "",
     phone: "",
     location: "",
-    type: "",
-    activeListings: "",
+    selectType: "",
+    ActiveListings: "",
     closedDeals: "",
-    avatarUrl: "",
+    AvatarUrl: "",
+    commissionRate: "",
   });
 
   const handleChange = (e) => {
@@ -69,8 +67,9 @@ export default function BrokerAgentPage() {
           idx === editIndex
             ? {
                 ...formData,
-                activeListings: +formData.activeListings,
+                ActiveListings: +formData.ActiveListings,
                 closedDeals: +formData.closedDeals,
+                commissionRate: +formData.commissionRate,
               }
             : broker
         )
@@ -80,8 +79,9 @@ export default function BrokerAgentPage() {
         ...brokers,
         {
           ...formData,
-          activeListings: +formData.activeListings,
+          ActiveListings: +formData.ActiveListings,
           closedDeals: +formData.closedDeals,
+          commissionRate: +formData.commissionRate,
         },
       ]);
     }
@@ -91,10 +91,11 @@ export default function BrokerAgentPage() {
       email: "",
       phone: "",
       location: "",
-      type: "",
-      activeListings: "",
+      selectType: "",
+      ActiveListings: "",
       closedDeals: "",
-      avatarUrl: "",
+      AvatarUrl: "",
+      commissionRate: "",
     });
     setIsOpen(false);
     setIsEdit(false);
@@ -110,16 +111,19 @@ export default function BrokerAgentPage() {
       email: brokerToEdit.email,
       phone: brokerToEdit.phone,
       location: brokerToEdit.location,
-      type: brokerToEdit.type,
-      activeListings: brokerToEdit.activeListings.toString(),
+      selectType: brokerToEdit.selectType,
+      ActiveListings: brokerToEdit.ActiveListings.toString(),
       closedDeals: brokerToEdit.closedDeals.toString(),
-      avatarUrl: brokerToEdit.avatarUrl,
+      AvatarUrl: brokerToEdit.AvatarUrl,
+      commissionRate: brokerToEdit.commissionRate.toString(),
     });
     setIsOpen(true);
   };
 
   const handleDelete = (index) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this broker?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this broker?"
+    );
     if (confirmDelete) {
       setBrokers(brokers.filter((_, i) => i !== index));
     }
@@ -128,7 +132,7 @@ export default function BrokerAgentPage() {
   const filteredBrokers =
     filterType === "All"
       ? brokers
-      : brokers.filter((b) => b.type === filterType);
+      : brokers.filter((b) => b.selectType === filterType);
 
   return (
     <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
@@ -204,12 +208,12 @@ export default function BrokerAgentPage() {
 
             <div className="flex flex-col">
               <img
-                src={broker.avatarUrl}
+                src={broker.AvatarUrl}
                 className="w-20 h-20 rounded-full mb-2"
                 alt={broker.name}
               />
               <span className="bg-purple-500 text-white w-[100px] text-center text-xs px-3 py-1 rounded-full mb-2">
-                {broker.type}
+                {broker.selectType}
               </span>
               <div className="flex items-center gap-2 text-lg">
                 {broker.name}
@@ -227,17 +231,23 @@ export default function BrokerAgentPage() {
                 </div>
               </div>
               <div className="flex justify-between w-full mt-4 border-t pt-3 text-sm">
-                <div className="w-1/2 text-center">
+                <div className="w-1/3 text-center">
                   <div className="text-purple-700 font-bold">
-                    {broker.activeListings}
+                    {broker.ActiveListings}
                   </div>
                   <div className="text-gray-500">Listings</div>
                 </div>
-                <div className="w-1/2 text-center">
+                <div className="w-1/3 text-center">
                   <div className="text-purple-700 font-bold">
                     {broker.closedDeals}
                   </div>
                   <div className="text-gray-500">Deals</div>
+                </div>
+                <div className="w-1/3 text-center">
+                  <div className="text-purple-700 font-bold">
+                    {broker.commissionRate}%
+                  </div>
+                  <div className="text-gray-500">Commission</div>
                 </div>
               </div>
             </div>
@@ -256,68 +266,161 @@ export default function BrokerAgentPage() {
             {isEdit ? "Edit Broker/Agent" : "Add Broker/Agent"}
           </Dialog.Title>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              placeholder="Name"
-            />
-            <input
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              placeholder="Email"
-            />
-            <input
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              placeholder="Phone"
-            />
-            <input
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              placeholder="Location"
-            />
-            <select
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              className="border p-2 rounded"
-            >
-              <option value="">Select Type</option>
-              <option value="Internal">Internal</option>
-              <option value="Broker">Broker</option>
-              <option value="Agent">Agent</option>
-            </select>
-            <input
-              name="activeListings"
-              value={formData.activeListings}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              placeholder="Active Listings"
-              type="number"
-            />
-            <input
-              name="closedDeals"
-              value={formData.closedDeals}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              placeholder="Closed Deals"
-              type="number"
-            />
-            <input
-              name="avatarUrl"
-              value={formData.avatarUrl}
-              onChange={handleChange}
-              className="border p-2 rounded sm:col-span-2"
-              placeholder="Avatar URL"
-            />
+            <div className="space-y-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name*
+              </label>
+              <input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Name"
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Email"
+              />
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Phone
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Phone"
+              />
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="location"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Location
+              </label>
+              <input
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Location"
+              />
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="selectType"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Type
+              </label>
+              <select
+                id="selectType"
+                name="selectType"
+                value={formData.selectType}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+              >
+                <option value="">Select Type</option>
+                <option value="Internal">Internal</option>
+                <option value="Broker">Broker</option>
+                <option value="Agent">Agent</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="commissionRate"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Commission Rate*
+              </label>
+              <input
+                id="commissionRate"
+                name="commissionRate"
+                value={formData.commissionRate}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Commission Rate"
+                type="number"
+                step="0.1"
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="ActiveListings"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Active Listings
+              </label>
+              <input
+                id="ActiveListings"
+                name="ActiveListings"
+                value={formData.ActiveListings}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Active Listings"
+                type="number"
+              />
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="closedDeals"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Closed Deals
+              </label>
+              <input
+                id="closedDeals"
+                name="closedDeals"
+                value={formData.closedDeals}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Closed Deals"
+                type="number"
+              />
+            </div>
+            <div className="space-y-1 sm:col-span-2">
+              <label
+                htmlFor="AvatarUrl"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Avatar 
+              </label>
+              <input
+                type="file"
+                id="AvatarUrl"
+                name="AvatarUrl"
+                value={formData.AvatarUrl}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Avatar URL"
+              />
+            </div>
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button

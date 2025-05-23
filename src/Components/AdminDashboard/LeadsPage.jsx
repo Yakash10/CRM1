@@ -17,10 +17,8 @@ const LeadsPage = () => {
       phone: "(555) 123-4567",
       status: "New",
       source: "Website Inquiry",
-      assignedTo: "Sarah Williams",
-      propertyInterest: "2 Bedroom Apartment, Downtown",
+      notes: "Interested in downtown properties",
       createdAt: "2024-05-01",
-      lastActivity: "2 hours ago",
       image:
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
     },
@@ -28,12 +26,10 @@ const LeadsPage = () => {
       name: "Emily Smith",
       email: "emily.smith@example.com",
       phone: "(555) 987-6543",
-      status: "Contacted",
+      status: "In Progress",
       source: "Referral",
-      assignedTo: "John Carter",
-      propertyInterest: "Luxury Condo, Uptown",
+      notes: "Looking for luxury condos",
       createdAt: "2024-04-29",
-      lastActivity: "1 day ago",
       image:
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
     },
@@ -41,12 +37,10 @@ const LeadsPage = () => {
       name: "David Lee",
       email: "david.lee@example.com",
       phone: "(555) 222-3333",
-      status: "Qualified",
+      status: "Converted",
       source: "Social Media",
-      assignedTo: "Laura Green",
-      propertyInterest: "3 BHK Villa, Suburbs",
+      notes: "Purchased a 3 BHK villa",
       createdAt: "2024-04-25",
-      lastActivity: "3 days ago",
       image:
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
     },
@@ -59,10 +53,8 @@ const LeadsPage = () => {
     phone: "",
     status: "New",
     source: "",
-    assignedTo: "",
-    propertyInterest: "",
+    notes: "",
     createdAt: "",
-    lastActivity: "",
     image: "",
   });
 
@@ -75,8 +67,8 @@ const LeadsPage = () => {
   };
 
   const handleSaveLead = () => {
-    if (!newLead.name || !newLead.email) {
-      alert("Name and email are required.");
+    if (!newLead.name) {
+      alert("Name is required.");
       return;
     }
 
@@ -85,7 +77,13 @@ const LeadsPage = () => {
       updated[editingLeadIndex] = newLead;
       setLeads(updated);
     } else {
-      setLeads([...leads, newLead]);
+      setLeads([
+        ...leads,
+        {
+          ...newLead,
+          createdAt: new Date().toISOString().split("T")[0], // Set current date if creating new
+        },
+      ]);
     }
 
     resetForm();
@@ -112,10 +110,8 @@ const LeadsPage = () => {
       phone: "",
       status: "New",
       source: "",
-      assignedTo: "",
-      propertyInterest: "",
+      notes: "",
       createdAt: "",
-      lastActivity: "",
       image: "",
     });
   };
@@ -124,10 +120,12 @@ const LeadsPage = () => {
     switch (status) {
       case "New":
         return "bg-blue-100 text-blue-800";
-      case "Contacted":
+      case "In Progress":
         return "bg-purple-100 text-purple-800";
-      case "Qualified":
-        return "bg-yellow-100 text-yellow-800";
+      case "Converted":
+        return "bg-green-100 text-green-800";
+      case "Lost":
+        return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -151,8 +149,9 @@ const LeadsPage = () => {
         >
           <option value="All">All Statuses</option>
           <option value="New">New</option>
-          <option value="Contacted">Contacted</option>
-          <option value="Qualified">Qualified</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Converted">Converted</option>
+          <option value="Lost">Lost</option>
         </select>
         <button
           onClick={() => {
@@ -218,10 +217,10 @@ const LeadsPage = () => {
                 <Voicemail size={16} /> {lead.phone}
               </p>
               <p className="flex items-center gap-2">
-                <Building2 size={16} /> {lead.propertyInterest}
+                <Building2 size={16} /> {lead.notes}
               </p>
               <p className="flex items-center gap-2">
-                <History size={16} /> Last activity: {lead.lastActivity}
+                <History size={16} /> Created: {lead.createdAt}
               </p>
             </div>
             <div className="flex justify-between items-center mt-4">
@@ -231,9 +230,6 @@ const LeadsPage = () => {
                 )}`}
               >
                 {lead.status}
-              </span>
-              <span className="text-sm text-gray-600">
-                Assigned to: <strong>{lead.assignedTo}</strong>
               </span>
             </div>
           </div>
@@ -255,87 +251,134 @@ const LeadsPage = () => {
                 }}
                 className="text-gray-500 hover:text-red-500 text-2xl"
               >
-                &times;
+                ×
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                name="name"
-                value={newLead.name}
-                onChange={handleChange}
-                placeholder="Name"
-                className="border p-2 rounded"
-              />
-              <input
-                name="email"
-                value={newLead.email}
-                onChange={handleChange}
-                placeholder="Email"
-                className="border p-2 rounded"
-              />
-              <input
-                name="phone"
-                value={newLead.phone}
-                onChange={handleChange}
-                placeholder="Phone"
-                className="border p-2 rounded"
-              />
-              <select
-                name="status"
-                value={newLead.status}
-                onChange={handleChange}
-                className="border p-2 rounded"
-              >
-                <option value="New">New</option>
-                <option value="Contacted">Contacted</option>
-                <option value="Qualified">Qualified</option>
-              </select>
-              <input
-                name="source"
-                value={newLead.source}
-                onChange={handleChange}
-                placeholder="Source"
-                className="border p-2 rounded"
-              />
-              <input
-                name="assignedTo"
-                value={newLead.assignedTo}
-                onChange={handleChange}
-                placeholder="Assigned To"
-                className="border p-2 rounded"
-              />
-              <input
-                name="propertyInterest"
-                value={newLead.propertyInterest}
-                onChange={handleChange}
-                placeholder="Property Interest"
-                className="border p-2 rounded"
-              />
-              <input
-                name="createdAt"
-                value={newLead.createdAt}
-                onChange={handleChange}
-                placeholder="Created At"
-                className="border p-2 rounded"
-              />
-              <input
-                name="lastActivity"
-                value={newLead.lastActivity}
-                onChange={handleChange}
-                placeholder="Last Activity"
-                className="border p-2 rounded"
-              />
-              <input
-                name="image"
-                value={newLead.image}
-                onChange={handleChange}
-                placeholder="Image URL"
-                className="border p-2 rounded col-span-2"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Name */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="name">
+                  Name *
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  value={newLead.name}
+                  onChange={handleChange}
+                  placeholder="Name"
+                  className="border p-2 rounded"
+                  required
+                />
+              </div>
+              {/* Email */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  value={newLead.email}
+                  onChange={handleChange}
+                  placeholder="Email"
+                  className="border p-2 rounded"
+                />
+              </div>
+              {/* Phone */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="phone">
+                  Phone
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  value={newLead.phone}
+                  onChange={handleChange}
+                  placeholder="Phone"
+                  className="border p-2 rounded"
+                />
+              </div>
+              {/* Status */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium " htmlFor="status">
+                  Status
+                </label>
+                <select
+                  id="status"
+                  name="status"
+                  value={newLead.status}
+                  onChange={handleChange}
+                  className="border p-2 rounded"
+                >
+                  <option value="New">New</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Converted">Converted</option>
+                  <option value="Lost">Lost</option>
+                </select>
+              </div>
+              {/* Source */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="source">
+                  Source
+                </label>
+                <input
+                  id="source"
+                  name="source"
+                  value={newLead.source}
+                  onChange={handleChange}
+                  placeholder="Source"
+                  className="border p-2 rounded"
+                />
+              </div>
+              {/* Notes */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="notes">
+                  Notes
+                </label>
+                <input
+                  id="notes"
+                  name="notes"
+                  value={newLead.notes}
+                  onChange={handleChange}
+                  placeholder="Notes"
+                  className="border p-2 rounded"
+                />
+              </div>
+              {/* Created At */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="createdAt">
+                  Created At
+                </label>
+                <input
+                  id="createdAt"
+                  name="createdAt"
+                  value={newLead.createdAt}
+                  onChange={handleChange}
+                  placeholder="YYYY-MM-DD"
+                  className="border p-2 rounded"
+                />
+              </div>
+              {/* Image URL */}
+              <div className="flex flex-col md:col-span-2">
+                <label className="mb-1 font-medium" htmlFor="image">
+                  Image
+                </label>
+                <input type="file"
+                  id="image"
+                  name="image"
+                  value={newLead.image}
+                  onChange={handleChange}
+                  placeholder="Image URL"
+                  className="border p-2 rounded"
+                />
+              </div>
             </div>
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowPopup(false)}
+                onClick={() => {
+                  setShowPopup(false);
+                  setEditingLeadIndex(null);
+                }}
                 className="mr-2 px-4 py-2 border rounded text-gray-600"
               >
                 Cancel

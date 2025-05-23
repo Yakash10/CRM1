@@ -12,7 +12,7 @@ import logout from "../AdminDashboard/Assets/logout.png";
 import sidebarlogo from "../AdminDashboard/Assets/sidebarlogo.png";
 
 const navItems = [
-  { icon: sidebar1, label: "Dashboard", link: "/" },
+  { icon: sidebar1, label: "Dashboard", link: "/admin" },
   { icon: sidebar2, label: "Properties", link: "/propertiespage" },
   { icon: sidebar3, label: "Leads", link: "/leadspage" },
   { icon: sidebar6, label: "Brokers & External Agents", link: "/agentpage" },

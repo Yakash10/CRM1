@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Popup from "./Popup";
 
 const properties = [
   {
@@ -11,6 +12,7 @@ const properties = [
     bed: 3,
     bath: 2,
     kitchen: 1,
+    location: "Chennai",
   },
   {
     id: 2,
@@ -21,6 +23,7 @@ const properties = [
     bed: 4,
     bath: 3,
     kitchen: 2,
+    location: "Hyderabad",
   },
   {
     id: 3,
@@ -31,6 +34,7 @@ const properties = [
     bed: 0,
     bath: 0,
     kitchen: 0,
+    location: "Delhi-NCR",
   },
   {
     id: 4,
@@ -41,6 +45,7 @@ const properties = [
     bed: 0,
     bath: 0,
     kitchen: 0,
+    location: "Mumbai",
   },
   {
     id: 5,
@@ -51,6 +56,7 @@ const properties = [
     bed: 3,
     bath: 2,
     kitchen: 1,
+    location: "Bengaluru",
   },
   {
     id: 6,
@@ -61,25 +67,49 @@ const properties = [
     bed: 5,
     bath: 4,
     kitchen: 2,
+    location: "Chennai",
   },
 ];
 
 const categories = ["All", "Apartment", "Villa", "Plot", "Land"];
 
-const PropertyListing = () => {
+const Apartments = () => {
   const [selected, setSelected] = useState("All");
-
-  const filteredProperties =
-    selected === "All"
-      ? properties
-      : properties.filter(
-          (p) => p.type.toLowerCase() === selected.toLowerCase()
-        );
-
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const navigate = useNavigate();
+
+  // Filter properties by both category and location
+  const filteredProperties = properties.filter((property) => {
+    const matchesCategory =
+      selected === "All" ||
+      property.type.toLowerCase() === selected.toLowerCase();
+    const matchesLocation =
+      !selectedLocation || property.location === selectedLocation;
+    return matchesCategory && matchesLocation;
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 mt-10">
+      {/* Location Popup */}
+      <Popup
+        selectedLocation={selectedLocation}
+        setSelectedLocation={setSelectedLocation}
+      />
+
+      {/* Location Filter Display */}
+      {selectedLocation && (
+        <div className="mb-4 flex items-center gap-2">
+          <span className="text-sm">Filtering by location: </span>
+          <span className="font-semibold">{selectedLocation}</span>
+          <button
+            onClick={() => setSelectedLocation(null)}
+            className="ml-2 text-sm text-red-500 hover:text-red-700"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* Heading and View All */}
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -112,42 +142,67 @@ const PropertyListing = () => {
       </div>
 
       {/* Property Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProperties.map((property) => (
-          <div
-            key={property.id}
-            className="relative w-full h-[300px] rounded-lg overflow-hidden shadow-md group"
+      {filteredProperties.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProperties.map((property) => (
+            <div
+              key={property.id}
+              className="relative w-full h-[300px] rounded-lg overflow-hidden shadow-md group"
+            >
+              <img
+                onClick={() =>
+                  navigate("/builder", {
+                    state: { builderName: property.buildername },
+                  })
+                }
+                src={property.image}
+                alt={`Property ${property.id}`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+              />
+
+              {/* Location (Left Side) */}
+              <div className="absolute top-2 left-2 bg-white bg-opacity-80 text-black text-xs font-medium px-3 py-1 rounded-r-lg shadow">
+                {property.location}
+              </div>
+
+              {/* Builder Name (Right Side) */}
+              <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-sm px-3 py-1 rounded-l-lg shadow">
+                {property.buildername}
+              </div>
+
+              {/* Property Details at Bottom */}
+              <div className="absolute flex gap-2 bottom-0 left-0 w-full bg-black bg-opacity-10 text-white text-xs px-4 py-2">
+                <p className="border border-white rounded-full px-2 py-1">
+                  {property.bed} Bed
+                </p>
+                <p className="border border-white rounded-full px-2 py-1">
+                  {property.bath} Bath
+                </p>
+                <p className="border border-white rounded-full px-2 py-1">
+                  {property.kitchen} Kitchen
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-10">
+          <p className="text-gray-500">
+            No properties found matching your filters.
+          </p>
+          <button
+            onClick={() => {
+              setSelected("All");
+              setSelectedLocation(null);
+            }}
+            className="mt-4 text-orange-600 hover:underline"
           >
-            <img
-              onClick={() =>
-                navigate("/builder", {
-                  state: { builderName: property.buildername },
-                })
-              }
-              src={property.image}
-              alt={`Property ${property.id}`}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-sm px-3 py-1 rounded-tr-lg">
-              {property.buildername}
-            </div>
-            {/* Property Details Below Image */}
-            <div className="absolute flex gap-2 bottom-0 left-0 w-full bg-black bg-opacity-10 text-white text-xs px-4 py-2">
-              <p className="border border-white rounded-full px-2 py-1">
-                {property.bed} Bed
-              </p>
-              <p className="border border-white rounded-full px-2 py-1">
-                {property.bath} Bath
-              </p>
-              <p className="border border-white rounded-full px-2 py-1">
-                {property.kitchen} Kitchen
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+            Clear all filters
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
-export default PropertyListing;
+export default Apartments;

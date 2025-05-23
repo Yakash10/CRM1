@@ -35,13 +35,33 @@ const PropertyHighlights = () => {
       <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
       {/* Navbar */}
-    <div className="absolute top-5 left-1/2 transform -translate-x-1/2 hidden md:flex space-x-6 lg:space-x-10 text-white font-semibold text-sm lg:text-base">
-  <h1 className="cursor-pointer">Apartments</h1>
-  <h1 className="cursor-pointer">Individual House</h1>
-  <h1 className="cursor-pointer">Ongoing products</h1>
-  <h1 className="cursor-pointer">Contact Us</h1>
-  <h1 className="cursor-pointer">Blogs</h1>
+  <div className="absolute top-5 left-1/2 transform -translate-x-1/2 hidden md:flex w-[100%] max-w-7xl items-center text-white font-semibold text-sm lg:text-base">
+      <>
+      </>
+    <div className="flex flex-1 justify-center space-x-6 lg:space-x-10">
+    <h1 className="cursor-pointer flex-shrink-0">Apartments</h1>
+    <h1 className="cursor-pointer">Individual House</h1>
+    <h1 className="cursor-pointer">Ongoing products</h1>
+    <h1 className="cursor-pointer">Contact Us</h1>
+    <h1 className="cursor-pointer">Blogs</h1>
+  </div>
+<div className="flex space-x-3">
+  <button className="px-4 py-2 bg-white text-black rounded hover:bg-blue-700 hover:text-white transition">
+    Sign Up
+  </button>
+
+  <Link to="/login">
+    <button className="px-4 py-2 bg-white text-black rounded hover:bg-blue-700 hover:text-white transition">
+      Login
+    </button>
+  </Link>
 </div>
+</div>
+
+
+
+
+
 
 
       {/* Logo */}

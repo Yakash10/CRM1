@@ -84,6 +84,13 @@ import ClientNavbar from "./Components/ClientBookingPage/ClientNavbar";
 import MainContent from "./Components/ClientBookingPage/MainContent";
 import ClientFooter from "./Components/ClientBookingPage/ClientFooter";
 
+import LoginPage from "./Components/Authentication/Login";
+// import Popup from "./Components/HomePage/Popup";
+// import BuilderForm from "./Components/HomePage/BuilderForm";
+// import FloorForm from "./Components/HomePage/FloorForm";
+// import ProjectForm from "./Components/HomePage/ProjectForm";
+// import BuildingForm from "./Components/HomePage/BuildingForm";
+// import HomeUnitsForm from "./Components/HomePage/HomeUnitsForm";
 
 
 // Builder Inner Page Layout
@@ -125,6 +132,12 @@ function LandingPage() {
       <FloorPlan />
       <Review />
       <Footer />
+      {/* <Popup /> */}
+      {/* <BuilderForm />
+      <ProjectForm />
+      <BuildingForm />
+      <FloorForm />
+      <HomeUnitsForm/> */}
      
     </>
   );
@@ -170,7 +183,6 @@ function App() {
         <Route path="/clientbooking" element={<ClientBookingPage />} />
         {/* <Route path="/login" element={<Login />} /> */}
       
-
         {/* Admin Layout Route */}
         <Route path="/" element={<AdminLayout />}>
           <Route path="admin" element={<Admin />} /> {/* Dashboard */}
@@ -192,6 +204,8 @@ function App() {
           <Route path="usercalendar" element={<UserCalendar />} />
           <Route path="reports" element={<Reports />} />
         </Route>
+
+        <Route path="/login" element={<LoginPage />} />
 
         {/* propertymanagement */}
 
