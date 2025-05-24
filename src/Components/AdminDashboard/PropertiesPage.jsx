@@ -531,7 +531,7 @@ export default function PropertyManager() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Company Logo
+                    Company 
                   </label>
                   <input
                     type="file"
@@ -595,10 +595,10 @@ export default function PropertyManager() {
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Photo URL
+                        Photo 
                       </label>
                       <input
-                        type="text"
+                        type="file"
                         value={newCoverPhoto.url}
                         onChange={(e) =>
                           setNewCoverPhoto({
@@ -612,7 +612,7 @@ export default function PropertyManager() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
+                      {/* <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Media Type
                         </label>
@@ -630,7 +630,7 @@ export default function PropertyManager() {
                           <option value="video">Video</option>
                           <option value="3d">3D Tour</option>
                         </select>
-                      </div>
+                      </div> */}
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -713,10 +713,10 @@ export default function PropertyManager() {
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Gallery Item URL
+                        Gallery
                       </label>
                       <input
-                        type="text"
+                        type="file"
                         value={newGalleryItem.url}
                         onChange={(e) =>
                           setNewGalleryItem({

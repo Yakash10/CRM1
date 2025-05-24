@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PropertiesPage = () => {
+  const navigate = useNavigate();
+
   const properties = [
     {
       image:
@@ -40,12 +43,17 @@ const PropertiesPage = () => {
     },
   ];
 
+  const handlePropertyClick = (property) => {
+    navigate("/clientbooking", { state: { property } });
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {properties.map((property, index) => (
         <div
           key={index}
-          className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200"
+          className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+          onClick={() => handlePropertyClick(property)}
         >
           <div className="relative">
             <img

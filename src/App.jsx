@@ -85,12 +85,13 @@ import MainContent from "./Components/ClientBookingPage/MainContent";
 import ClientFooter from "./Components/ClientBookingPage/ClientFooter";
 
 import LoginPage from "./Components/Authentication/Login";
+import AboutUs from "./Components/HomePage/AboutUs";
+import ContactUs from "./Components/HomePage/ContactUs";
+import Testimonials from "./Components/HomePage/Testimonials";
+import FooterProperties from "./Components/HomePage/FooterProperties";
+import WhyUs from "./Components/HomePage/WhyUs";
 // import Popup from "./Components/HomePage/Popup";
-// import BuilderForm from "./Components/HomePage/BuilderForm";
-// import FloorForm from "./Components/HomePage/FloorForm";
-// import ProjectForm from "./Components/HomePage/ProjectForm";
-// import BuildingForm from "./Components/HomePage/BuildingForm";
-// import HomeUnitsForm from "./Components/HomePage/HomeUnitsForm";
+
 
 
 // Builder Inner Page Layout
@@ -133,11 +134,8 @@ function LandingPage() {
       <Review />
       <Footer />
       {/* <Popup /> */}
-      {/* <BuilderForm />
-      <ProjectForm />
-      <BuildingForm />
-      <FloorForm />
-      <HomeUnitsForm/> */}
+      {/* <WhyUs/> */}
+    
      
     </>
   );
@@ -182,7 +180,13 @@ function App() {
         <Route path="/builder" element={<BuilderInnerPage />} />
         <Route path="/clientbooking" element={<ClientBookingPage />} />
         {/* <Route path="/login" element={<Login />} /> */}
-      
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/footerproperties" element={<FooterProperties />} />
+        <Route path="/why-us" element={<WhyUs />} />
+        
+        
         {/* Admin Layout Route */}
         <Route path="/" element={<AdminLayout />}>
           <Route path="admin" element={<Admin />} /> {/* Dashboard */}
@@ -220,8 +224,6 @@ function App() {
           <Route path="propertyreport" element={<PropertyReport />} />
           <Route path="maintenance" element={<Maintenance />} />
         </Route>
-
-       
 
         {/* Client Booking Page Routes */}
       </Routes>

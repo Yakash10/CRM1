@@ -10,14 +10,34 @@ import {
 } from "lucide-react";
 
 const LeadsPage = () => {
+  // Sample users data for the assignedTo select field
+  const users = [
+    { id: "user1", name: "John Doe" },
+    { id: "user2", name: "Jane Smith" },
+    { id: "user3", name: "Robert Johnson" },
+    { id: "user4", name: "Emily Davis" },
+  ];
+
   const [leads, setLeads] = useState([
     {
       name: "Michael Johnson",
       email: "michael.johnson@example.com",
       phone: "(555) 123-4567",
-      status: "New",
-      source: "Website Inquiry",
-      notes: "Interested in downtown properties",
+      status: "new",
+      source: "website",
+      interestedIn: {
+        builder: null,
+        project: null,
+        unit: null,
+      },
+      assignedTo: "user2", // Now using ID from users array
+      notes: [
+        {
+          note: "Interested in downtown properties",
+          date: "2024-05-01",
+          addedBy: null,
+        },
+      ],
       createdAt: "2024-05-01",
       image:
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
@@ -26,9 +46,21 @@ const LeadsPage = () => {
       name: "Emily Smith",
       email: "emily.smith@example.com",
       phone: "(555) 987-6543",
-      status: "In Progress",
-      source: "Referral",
-      notes: "Looking for luxury condos",
+      status: "contacted",
+      source: "referral",
+      interestedIn: {
+        builder: null,
+        project: null,
+        unit: null,
+      },
+      assignedTo: "user1",
+      notes: [
+        {
+          note: "Looking for luxury condos",
+          date: "2024-04-29",
+          addedBy: null,
+        },
+      ],
       createdAt: "2024-04-29",
       image:
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
@@ -37,9 +69,21 @@ const LeadsPage = () => {
       name: "David Lee",
       email: "david.lee@example.com",
       phone: "(555) 222-3333",
-      status: "Converted",
-      source: "Social Media",
-      notes: "Purchased a 3 BHK villa",
+      status: "converted",
+      source: "other",
+      interestedIn: {
+        builder: null,
+        project: null,
+        unit: null,
+      },
+      assignedTo: "user3",
+      notes: [
+        {
+          note: "Purchased a 3 BHK villa",
+          date: "2024-04-25",
+          addedBy: null,
+        },
+      ],
       createdAt: "2024-04-25",
       image:
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
@@ -51,9 +95,15 @@ const LeadsPage = () => {
     name: "",
     email: "",
     phone: "",
-    status: "New",
-    source: "",
-    notes: "",
+    status: "new",
+    source: "website",
+    interestedIn: {
+      builder: null,
+      project: null,
+      unit: null,
+    },
+    assignedTo: "",
+    notes: [],
     createdAt: "",
     image: "",
   });
@@ -63,7 +113,31 @@ const LeadsPage = () => {
   const [actionMenuIndex, setActionMenuIndex] = useState(null);
 
   const handleChange = (e) => {
-    setNewLead({ ...newLead, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setNewLead((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleInterestedInChange = (e) => {
+    const { name, value } = e.target;
+    setNewLead(prev => ({
+      ...prev,
+      interestedIn: {
+        ...prev.interestedIn,
+        [name]: value || null
+      }
+    }));
+  };
+
+  const handleNoteChange = (e) => {
+    const note = e.target.value;
+    setNewLead(prev => ({
+      ...prev,
+      notes: note ? [{
+        note,
+        date: new Date().toISOString().split("T")[0],
+        addedBy: null
+      }] : []
+    }));
   };
 
   const handleSaveLead = () => {
@@ -73,15 +147,21 @@ const LeadsPage = () => {
     }
 
     if (editingLeadIndex !== null) {
-      const updated = [...leads];
-      updated[editingLeadIndex] = newLead;
-      setLeads(updated);
+      const updatedLeads = leads.map((lead, index) =>
+        index === editingLeadIndex ? newLead : lead
+      );
+      setLeads(updatedLeads);
     } else {
       setLeads([
         ...leads,
         {
           ...newLead,
-          createdAt: new Date().toISOString().split("T")[0], // Set current date if creating new
+          notes: newLead.notes.length > 0 ? newLead.notes : [{
+            note: "Initial contact",
+            date: new Date().toISOString().split("T")[0],
+            addedBy: null,
+          }],
+          createdAt: newLead.createdAt || new Date().toISOString().split("T")[0],
         },
       ]);
     }
@@ -92,7 +172,7 @@ const LeadsPage = () => {
   };
 
   const handleEditLead = (index) => {
-    setNewLead(leads[index]);
+    setNewLead(JSON.parse(JSON.stringify(leads[index])));
     setEditingLeadIndex(index);
     setShowPopup(true);
     setActionMenuIndex(null);
@@ -108,9 +188,15 @@ const LeadsPage = () => {
       name: "",
       email: "",
       phone: "",
-      status: "New",
-      source: "",
-      notes: "",
+      status: "new",
+      source: "website",
+      interestedIn: {
+        builder: null,
+        project: null,
+        unit: null,
+      },
+      assignedTo: "",
+      notes: [],
       createdAt: "",
       image: "",
     });
@@ -118,17 +204,26 @@ const LeadsPage = () => {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case "New":
+      case "new":
         return "bg-blue-100 text-blue-800";
-      case "In Progress":
+      case "contacted":
         return "bg-purple-100 text-purple-800";
-      case "Converted":
+      case "interested":
+        return "bg-yellow-100 text-yellow-800";
+      case "converted":
         return "bg-green-100 text-green-800";
-      case "Lost":
+      case "not interested":
+        return "bg-gray-100 text-gray-800";
+      case "lost":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const getUserName = (userId) => {
+    const user = users.find(u => u.id === userId);
+    return user ? user.name : "Unassigned";
   };
 
   const filteredLeads =
@@ -148,10 +243,12 @@ const LeadsPage = () => {
           className="border p-2 rounded max-w-xs"
         >
           <option value="All">All Statuses</option>
-          <option value="New">New</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Converted">Converted</option>
-          <option value="Lost">Lost</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="interested">Interested</option>
+          <option value="not interested">Not Interested</option>
+          <option value="converted">Converted</option>
+          <option value="lost">Lost</option>
         </select>
         <button
           onClick={() => {
@@ -206,7 +303,7 @@ const LeadsPage = () => {
               />
               <div>
                 <h3 className="text-lg">{lead.name}</h3>
-                <p className="text-sm text-gray-500">{lead.source}</p>
+                <p className="text-sm text-gray-500 capitalize">{lead.source}</p>
               </div>
             </div>
             <div className="text-sm text-gray-600 space-y-2 mt-2">
@@ -217,15 +314,19 @@ const LeadsPage = () => {
                 <Voicemail size={16} /> {lead.phone}
               </p>
               <p className="flex items-center gap-2">
-                <Building2 size={16} /> {lead.notes}
+                <Building2 size={16} /> 
+                {lead.notes.length > 0 ? lead.notes[0].note : "No notes"}
               </p>
               <p className="flex items-center gap-2">
                 <History size={16} /> Created: {lead.createdAt}
               </p>
+              <p className="flex items-center gap-2">
+                Assigned To: {getUserName(lead.assignedTo)}
+              </p>
             </div>
             <div className="flex justify-between items-center mt-4">
               <span
-                className={`text-xs px-2 py-1 rounded-full font-semibold ${getStatusStyle(
+                className={`text-xs px-2 py-1 rounded-full font-semibold capitalize ${getStatusStyle(
                   lead.status
                 )}`}
               >
@@ -300,7 +401,7 @@ const LeadsPage = () => {
               </div>
               {/* Status */}
               <div className="flex flex-col">
-                <label className="mb-1 font-medium " htmlFor="status">
+                <label className="mb-1 font-medium" htmlFor="status">
                   Status
                 </label>
                 <select
@@ -310,10 +411,12 @@ const LeadsPage = () => {
                   onChange={handleChange}
                   className="border p-2 rounded"
                 >
-                  <option value="New">New</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Converted">Converted</option>
-                  <option value="Lost">Lost</option>
+                  <option value="new">New</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="interested">Interested</option>
+                  <option value="not interested">Not Interested</option>
+                  <option value="converted">Converted</option>
+                  <option value="lost">Lost</option>
                 </select>
               </div>
               {/* Source */}
@@ -321,12 +424,79 @@ const LeadsPage = () => {
                 <label className="mb-1 font-medium" htmlFor="source">
                   Source
                 </label>
-                <input
+                <select
                   id="source"
                   name="source"
                   value={newLead.source}
                   onChange={handleChange}
-                  placeholder="Source"
+                  className="border p-2 rounded"
+                >
+                  <option value="website">Website</option>
+                  <option value="referral">Referral</option>
+                  <option value="phone">Phone</option>
+                  <option value="email">Email</option>
+                  <option value="walk-in">Walk-in</option>
+                  <option value="advertisement">Advertisement</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              {/* Assigned To - Now a select field */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="assignedTo">
+                  Assigned To
+                </label>
+                <select
+                  id="assignedTo"
+                  name="assignedTo"
+                  value={newLead.assignedTo}
+                  onChange={handleChange}
+                  className="border p-2 rounded"
+                >
+                  <option value="">Select User</option>
+                  {users.map(user => (
+                    <option key={user.id} value={user.id}>{user.name}</option>
+                  ))}
+                </select>
+              </div>
+              {/* Interested In - Builder */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="builder">
+                  Interested In - Builder
+                </label>
+                <input
+                  id="builder"
+                  name="builder"
+                  value={newLead.interestedIn.builder || ""}
+                  onChange={handleInterestedInChange}
+                  placeholder="Builder "
+                  className="border p-2 rounded"
+                />
+              </div>
+              {/* Interested In - Project */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="project">
+                  Interested In - Project
+                </label>
+                <input
+                  id="project"
+                  name="project"
+                  value={newLead.interestedIn.project || ""}
+                  onChange={handleInterestedInChange}
+                  placeholder="Project"
+                  className="border p-2 rounded"
+                />
+              </div>
+              {/* Interested In - Unit */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium" htmlFor="unit">
+                  Interested In - Unit 
+                </label>
+                <input
+                  id="unit"
+                  name="unit"
+                  value={newLead.interestedIn.unit || ""}
+                  onChange={handleInterestedInChange}
+                  placeholder="Unit "
                   className="border p-2 rounded"
                 />
               </div>
@@ -338,9 +508,9 @@ const LeadsPage = () => {
                 <input
                   id="notes"
                   name="notes"
-                  value={newLead.notes}
-                  onChange={handleChange}
-                  placeholder="Notes"
+                  value={newLead.notes.length > 0 ? newLead.notes[0].note : ""}
+                  onChange={handleNoteChange}
+                  placeholder="Initial note"
                   className="border p-2 rounded"
                 />
               </div>
@@ -350,6 +520,7 @@ const LeadsPage = () => {
                   Created At
                 </label>
                 <input
+                type="date"
                   id="createdAt"
                   name="createdAt"
                   value={newLead.createdAt}
@@ -361,9 +532,10 @@ const LeadsPage = () => {
               {/* Image URL */}
               <div className="flex flex-col md:col-span-2">
                 <label className="mb-1 font-medium" htmlFor="image">
-                  Image
+                  Image 
                 </label>
-                <input type="file"
+                <input
+                type="file"
                   id="image"
                   name="image"
                   value={newLead.image}

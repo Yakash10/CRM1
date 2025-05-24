@@ -2,65 +2,37 @@ import React, { useState, useEffect } from "react";
 import { Pencil, Trash2, Plus, X } from "lucide-react";
 
 const defaultForm = {
-  title: "",
+  property: "",
   description: "",
-  propertyId: "",
-  unitNumber: "",
-  tenantId: "",
-  priority: "Low",
-  status: "New",
-  category: "",
-  dateSubmitted: "",
+  status: "Open",
   assignedTo: "",
-  estimateCost: "",
-  notes: "",
+  createdAt: new Date(),
 };
 
 const defaultRequests = [
   {
     id: 1,
-    title: "Leaky Faucet in Kitchen",
+    property: "Greenview Apartments",
     description: "The kitchen faucet is leaking and needs to be fixed.",
-    propertyId: "Greenview Apartments",
-    unitNumber: "A-101",
-    tenantId: "John Doe",
-    priority: "Medium",
-    status: "New",
-    category: "Plumbing",
-    dateSubmitted: "2025-05-01",
+    status: "Open",
     assignedTo: "Plumber Mike",
-    estimateCost: "$50",
-    notes: "Tenant reported via email",
+    createdAt: "2025-05-01",
   },
   {
     id: 2,
-    title: "Broken Window",
+    property: "Sunrise Villas",
     description: "Living room window glass is cracked.",
-    propertyId: "Sunrise Villas",
-    unitNumber: "B-202",
-    tenantId: "Jane Smith",
-    priority: "High",
-    status: "Assigned",
-    category: "Windows",
-    dateSubmitted: "2025-04-30",
+    status: "In Progress",
     assignedTo: "GlassFix Co.",
-    estimateCost: "$120",
-    notes: "",
+    createdAt: "2025-04-30",
   },
   {
     id: 3,
-    title: "AC Not Cooling",
+    property: "Palm Residency",
     description: "Air conditioner not cooling properly.",
-    propertyId: "Palm Residency",
-    unitNumber: "C-303",
-    tenantId: "Robert Brown",
-    priority: "High",
-    status: "In Progress",
-    category: "HVAC",
-    dateSubmitted: "2025-04-29",
+    status: "Completed",
     assignedTo: "CoolAir Services",
-    estimateCost: "$200",
-    notes: "Technician scheduled for May 6",
+    createdAt: "2025-04-29",
   },
 ];
 
@@ -80,7 +52,7 @@ const MaintenanceRequests = () => {
   useEffect(() => {
     setFiltered(
       requests.filter((r) =>
-        r.title.toLowerCase().includes(search.toLowerCase())
+        r.description.toLowerCase().includes(search.toLowerCase())
       )
     );
   }, [search, requests]);
@@ -112,35 +84,26 @@ const MaintenanceRequests = () => {
     setEditId(null);
   };
 
-  const getPriorityBadge = (priority) => {
+  const getStatusBadge = (status) => {
     const base = "text-xs px-2 py-1 rounded-full";
-    switch (priority) {
-      case "High":
-        return (
-          <span className={`${base} bg-orange-100 text-orange-700`}>
-            High Priority
-          </span>
-        );
-      case "Medium":
+    switch (status) {
+      case "Open":
+        return <span className={`${base} bg-red-100 text-red-700`}>Open</span>;
+      case "In Progress":
         return (
           <span className={`${base} bg-yellow-100 text-yellow-700`}>
-            Medium Priority
+            In Progress
           </span>
         );
-      case "Low":
+      case "Completed":
         return (
-          <span className={`${base} bg-blue-100 text-blue-700`}>
-            Low Priority
+          <span className={`${base} bg-green-100 text-green-700`}>
+            Completed
           </span>
         );
       default:
         return null;
     }
-  };
-
-  const getStatusBadge = (status) => {
-    const base = "text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700";
-    return <span className={base}>{status}</span>;
   };
 
   return (
@@ -158,8 +121,8 @@ const MaintenanceRequests = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
-        {["All Requests", "New", "Assigned", "In Progress", "Completed"].map(
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        {["All Requests", "Open", "In Progress", "Completed"].map(
           (label, index) => (
             <div
               key={index}
@@ -191,30 +154,16 @@ const MaintenanceRequests = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((req) => (
           <div key={req.id} className="border rounded-lg p-4 shadow-sm">
-            <h3 className="text-lg font-semibold">{req.title}</h3>
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="text-lg font-semibold">{req.property}</h3>
+              {getStatusBadge(req.status)}
+            </div>
             <p className="text-sm text-gray-600 mb-2">{req.description}</p>
             <div className="text-sm text-gray-700 mb-1">
-              <strong>Property:</strong> {req.propertyId} &nbsp; | &nbsp;
-              <strong>Unit:</strong> {req.unitNumber} &nbsp; | &nbsp;
-              <strong>Tenant:</strong> {req.tenantId}
+              <strong>Assigned To:</strong> {req.assignedTo || "N/A"}
             </div>
-            <div className="text-sm text-gray-700 mb-1">
-              <strong>Category:</strong> {req.category} &nbsp; | &nbsp;
-              <strong>Submitted:</strong> {req.dateSubmitted}
-            </div>
-            <div className="text-sm text-gray-700 mb-1">
-              <strong>Assigned To:</strong> {req.assignedTo || "N/A"} &nbsp; |
-              &nbsp;
-              <strong>Estimate Cost:</strong> {req.estimateCost || "N/A"}
-            </div>
-            {req.notes && (
-              <div className="text-sm text-gray-700 mb-2">
-                <strong>Notes:</strong> {req.notes}
-              </div>
-            )}
-            <div className="flex items-center gap-2 mb-2">
-              {getPriorityBadge(req.priority)}
-              {getStatusBadge(req.status)}
+            <div className="text-sm text-gray-700 mb-2">
+              <strong>Created At:</strong> {req.createdAt}
             </div>
             <div className="flex gap-2">
               <button
@@ -249,67 +198,20 @@ const MaintenanceRequests = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
-                placeholder="Title"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="border p-2 rounded"
-              />
-              <input
                 placeholder="Property"
-                value={form.propertyId}
-                onChange={(e) =>
-                  setForm({ ...form, propertyId: e.target.value })
-                }
+                value={form.property}
+                onChange={(e) => setForm({ ...form, property: e.target.value })}
                 className="border p-2 rounded"
               />
-              <input
-                placeholder="Unit Number"
-                value={form.unitNumber}
-                onChange={(e) =>
-                  setForm({ ...form, unitNumber: e.target.value })
-                }
-                className="border p-2 rounded"
-              />
-              <input
-                placeholder="Tenant"
-                value={form.tenantId}
-                onChange={(e) => setForm({ ...form, tenantId: e.target.value })}
-                className="border p-2 rounded"
-              />
-              <select
-                value={form.priority}
-                onChange={(e) => setForm({ ...form, priority: e.target.value })}
-                className="border p-2 rounded"
-              >
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-              </select>
               <select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
                 className="border p-2 rounded"
               >
-                <option>New</option>
-                <option>Assigned</option>
-                <option>In Progress</option>
-                <option>Completed</option>
-                <option>Cancelled</option>
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
               </select>
-              <input
-                placeholder="Category"
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="border p-2 rounded"
-              />
-              <input
-                placeholder="Date Submitted"
-                value={form.dateSubmitted}
-                onChange={(e) =>
-                  setForm({ ...form, dateSubmitted: e.target.value })
-                }
-                className="border p-2 rounded"
-              />
               <input
                 placeholder="Assigned To"
                 value={form.assignedTo}
@@ -319,10 +221,11 @@ const MaintenanceRequests = () => {
                 className="border p-2 rounded"
               />
               <input
-                placeholder="Estimate Cost"
-                value={form.estimateCost}
+                type="date"
+                placeholder="Created At"
+                value={form.createdAt}
                 onChange={(e) =>
-                  setForm({ ...form, estimateCost: e.target.value })
+                  setForm({ ...form, createdAt: e.target.value })
                 }
                 className="border p-2 rounded"
               />
@@ -334,12 +237,7 @@ const MaintenanceRequests = () => {
                 setForm({ ...form, description: e.target.value })
               }
               className="border p-2 rounded w-full mt-4"
-            />
-            <textarea
-              placeholder="Notes"
-              value={form.notes}
-              onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              className="border p-2 rounded w-full mt-2"
+              rows={4}
             />
             <div className="flex justify-end mt-4">
               <button

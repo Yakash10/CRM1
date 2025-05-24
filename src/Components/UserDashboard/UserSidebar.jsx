@@ -37,7 +37,7 @@ const UserSidebar = () => {
       <nav className="flex-1">
         <ul className="space-y-6">
           <Link
-            to="/dashboard"
+            to="/user"
             className={`flex items-center cursor-pointer ${isActive(
               "/dashboard"
             )}`}

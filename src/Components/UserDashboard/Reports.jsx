@@ -4,45 +4,45 @@ const ReportsPage = () => {
   const [reports, setReports] = useState([
     {
       id: 1,
+      lead: "lead123",
       date: "2025-04-20",
+      details: "Some details about the application",
       type: "Application",
       status: "Approved",
-      reportedBy: "John Doe",
-      profileImage: "https://i.pravatar.cc/100?img=1",
-      description: "Application for Flat #12A",
       property: "Casagrand Athens",
+      description: "Application for Flat #12A",
     },
     {
       id: 2,
+      lead: "lead456",
       date: "2025-04-18",
+      details: "Details about the inquiry",
       type: "Inquiry",
       status: "Pending",
-      reportedBy: "Jane Smith",
-      profileImage: "https://i.pravatar.cc/100?img=2",
-      description: "Inquiry about villa prices",
       property: "Radiant Villas",
+      description: "Inquiry about villa prices",
     },
     {
       id: 3,
+      lead: "lead789",
       date: "2025-04-19",
+      details: "Application details",
       type: "Application",
       status: "Rejected",
-      reportedBy: "Mark Lee",
-      profileImage: "https://i.pravatar.cc/100?img=3",
-      description: "Application for Flat #22B",
       property: "Relator Heights",
+      description: "Application for Flat #22B",
     },
   ]);
 
   const [showPopup, setShowPopup] = useState(false);
   const [newReport, setNewReport] = useState({
+    lead: "",
     date: "",
+    details: "",
     type: "Application",
     status: "Approved",
-    reportedBy: "",
-    profileImage: "",
-    description: "",
     property: "",
+    description: "",
   });
 
   const [typeFilter, setTypeFilter] = useState("All");
@@ -65,23 +65,21 @@ const ReportsPage = () => {
 
   const handleAddReport = () => {
     const newId = reports.length + 1;
-    const defaultImage = "https://i.pravatar.cc/100";
     setReports([
       ...reports,
       {
         id: newId,
         ...newReport,
-        profileImage: newReport.profileImage || defaultImage,
       },
     ]);
     setNewReport({
+      lead: "",
       date: "",
+      details: "",
       type: "Application",
       status: "Approved",
-      reportedBy: "",
-      profileImage: "",
-      description: "",
       property: "",
+      description: "",
     });
     setShowPopup(false);
   };
@@ -165,16 +163,11 @@ const ReportsPage = () => {
                 statusColor[report.status] || "border-gray-400"
               }`}
             >
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src={report.profileImage}
-                  alt="Profile"
-                  className="w-12 h-12 rounded-full object-cover border"
-                />
-                <div>
-                  <h3 className="font-semibold text-lg">{report.reportedBy}</h3>
-                  <p className="text-gray-500 text-sm">{report.date}</p>
-                </div>
+              <div className="mb-4">
+                <h3 className="font-semibold text-lg">
+                  Lead ID: {report.lead}
+                </h3>
+                <p className="text-gray-500 text-sm">{report.date}</p>
               </div>
               <p>
                 <strong>Type:</strong> {report.type}
@@ -184,6 +177,9 @@ const ReportsPage = () => {
               </p>
               <p>
                 <strong>Property:</strong> {report.property}
+              </p>
+              <p className="mt-2 text-gray-700">
+                <strong>Details:</strong> {report.details}
               </p>
               <p className="mt-2 text-gray-700">
                 <strong>Description:</strong> {report.description}
@@ -202,10 +198,27 @@ const ReportsPage = () => {
             <h2 className="text-2xl font-bold mb-4">Add New Report</h2>
             <div className="space-y-4">
               <input
+                type="text"
+                placeholder="Lead ID"
+                value={newReport.lead}
+                onChange={(e) =>
+                  setNewReport({ ...newReport, lead: e.target.value })
+                }
+                className="w-full p-2 border rounded-md"
+              />
+              <input
                 type="date"
                 value={newReport.date}
                 onChange={(e) =>
                   setNewReport({ ...newReport, date: e.target.value })
+                }
+                className="w-full p-2 border rounded-md"
+              />
+              <textarea
+                placeholder="Details"
+                value={newReport.details}
+                onChange={(e) =>
+                  setNewReport({ ...newReport, details: e.target.value })
                 }
                 className="w-full p-2 border rounded-md"
               />
@@ -233,25 +246,7 @@ const ReportsPage = () => {
               </select>
               <input
                 type="text"
-                placeholder="Reported By"
-                value={newReport.reportedBy}
-                onChange={(e) =>
-                  setNewReport({ ...newReport, reportedBy: e.target.value })
-                }
-                className="w-full p-2 border rounded-md"
-              />
-              <input
-                type="url"
-                placeholder="Profile Image URL"
-                value={newReport.profileImage}
-                onChange={(e) =>
-                  setNewReport({ ...newReport, profileImage: e.target.value })
-                }
-                className="w-full p-2 border rounded-md"
-              />
-              <input
-                type="text"
-                placeholder="Property Name"
+                placeholder="Property"
                 value={newReport.property}
                 onChange={(e) =>
                   setNewReport({ ...newReport, property: e.target.value })

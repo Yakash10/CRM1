@@ -10,50 +10,58 @@ export default function AgentPage() {
 
   const [brokers, setBrokers] = useState([
     {
-      name: "Sarah Williams",
+      user: "user_id_1",
+      companyName: "Williams Realty",
       email: "sarah.williams@proppulse.com",
       phone: "(555) 123-4567",
       location: "New York, NY",
       selectType: "Internal",
-      ActiveListings: 12,
+      activeListings: 12,
       closedDeals: 45,
-      AvatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
+      avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
       commissionRate: 2.5,
+      properties: []
     },
     {
-      name: "John Smith",
+      user: "user_id_2",
+      companyName: "Smith Properties",
       email: "john.smith@proppulse.com",
       phone: "(555) 987-6543",
       location: "San Francisco, CA",
       selectType: "Agent",
-      ActiveListings: 8,
+      activeListings: 8,
       closedDeals: 37,
-      AvatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+      avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
       commissionRate: 3.0,
+      properties: []
     },
     {
-      name: "David Anderson",
+      user: "user_id_3",
+      companyName: "Anderson Brokers",
       email: "david.anderson@proppulse.com",
       phone: "(555) 456-7890",
       location: "Chicago, IL",
       selectType: "Broker",
-      ActiveListings: 15,
+      activeListings: 15,
       closedDeals: 62,
-      AvatarUrl: "https://randomuser.me/api/portraits/men/79.jpg",
+      avatarUrl: "https://randomuser.me/api/portraits/men/79.jpg",
       commissionRate: 2.8,
+      properties: []
     },
   ]);
 
   const [formData, setFormData] = useState({
-    name: "",
+    user: "",
+    companyName: "",
     email: "",
     phone: "",
     location: "",
     selectType: "",
-    ActiveListings: "",
+    activeListings: "",
     closedDeals: "",
-    AvatarUrl: "",
+    avatarUrl: "",
     commissionRate: "",
+    properties: []
   });
 
   const handleChange = (e) => {
@@ -61,15 +69,22 @@ export default function AgentPage() {
   };
 
   const handleSubmit = () => {
+    if (!formData.companyName || !formData.commissionRate) {
+      alert("Company Name and Commission Rate are required fields");
+      return;
+    }
+
     if (isEdit) {
       setBrokers(
         brokers.map((broker, idx) =>
           idx === editIndex
             ? {
-                ...formData,
-                ActiveListings: +formData.ActiveListings,
-                closedDeals: +formData.closedDeals,
+                ...broker, // Keep all existing fields
+                ...formData, // Override with form data
+                activeListings: +formData.activeListings || broker.activeListings,
+                closedDeals: +formData.closedDeals || broker.closedDeals,
                 commissionRate: +formData.commissionRate,
+                properties: formData.properties || broker.properties
               }
             : broker
         )
@@ -79,23 +94,26 @@ export default function AgentPage() {
         ...brokers,
         {
           ...formData,
-          ActiveListings: +formData.ActiveListings,
-          closedDeals: +formData.closedDeals,
+          activeListings: +formData.activeListings || 0,
+          closedDeals: +formData.closedDeals || 0,
           commissionRate: +formData.commissionRate,
+          properties: formData.properties || []
         },
       ]);
     }
 
     setFormData({
-      name: "",
+      user: "",
+      companyName: "",
       email: "",
       phone: "",
       location: "",
       selectType: "",
-      ActiveListings: "",
+      activeListings: "",
       closedDeals: "",
-      AvatarUrl: "",
+      avatarUrl: "",
       commissionRate: "",
+      properties: []
     });
     setIsOpen(false);
     setIsEdit(false);
@@ -107,15 +125,17 @@ export default function AgentPage() {
     setEditIndex(index);
     const brokerToEdit = brokers[index];
     setFormData({
-      name: brokerToEdit.name,
+      user: brokerToEdit.user,
+      companyName: brokerToEdit.companyName,
       email: brokerToEdit.email,
       phone: brokerToEdit.phone,
       location: brokerToEdit.location,
       selectType: brokerToEdit.selectType,
-      ActiveListings: brokerToEdit.ActiveListings.toString(),
+      activeListings: brokerToEdit.activeListings.toString(),
       closedDeals: brokerToEdit.closedDeals.toString(),
-      AvatarUrl: brokerToEdit.AvatarUrl,
+      avatarUrl: brokerToEdit.avatarUrl,
       commissionRate: brokerToEdit.commissionRate.toString(),
+      properties: brokerToEdit.properties
     });
     setIsOpen(true);
   };
@@ -160,7 +180,23 @@ export default function AgentPage() {
           </select>
         </div>
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsEdit(false);
+            setFormData({
+              user: "",
+              companyName: "",
+              email: "",
+              phone: "",
+              location: "",
+              selectType: "",
+              activeListings: "",
+              closedDeals: "",
+              avatarUrl: "",
+              commissionRate: "",
+              properties: []
+            });
+            setIsOpen(true);
+          }}
           className="bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700 flex items-center gap-2"
         >
           <Plus size={18} /> Add Broker/Agent
@@ -208,15 +244,15 @@ export default function AgentPage() {
 
             <div className="flex flex-col">
               <img
-                src={broker.AvatarUrl}
+                src={broker.avatarUrl}
                 className="w-20 h-20 rounded-full mb-2"
-                alt={broker.name}
+                alt={broker.companyName}
               />
               <span className="bg-purple-500 text-white w-[100px] text-center text-xs px-3 py-1 rounded-full mb-2">
                 {broker.selectType}
               </span>
               <div className="flex items-center gap-2 text-lg">
-                {broker.name}
+                {broker.companyName}
                 <span className="flex items-center text-sm text-gray-500 gap-1">
                   <MapPin size={14} className="text-gray-400" />
                   {broker.location}
@@ -233,7 +269,7 @@ export default function AgentPage() {
               <div className="flex justify-between w-full mt-4 border-t pt-3 text-sm">
                 <div className="w-1/3 text-center">
                   <div className="text-purple-700 font-bold">
-                    {broker.ActiveListings}
+                    {broker.activeListings}
                   </div>
                   <div className="text-gray-500">Listings</div>
                 </div>
@@ -255,7 +291,7 @@ export default function AgentPage() {
         ))}
       </div>
 
-      {/* Modal Dialog */}
+      {/* Edit/Add Modal Dialog */}
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -266,20 +302,36 @@ export default function AgentPage() {
             {isEdit ? "Edit Broker/Agent" : "Add Broker/Agent"}
           </Dialog.Title>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
+            {/* <div className="space-y-1 sm:col-span-2">
               <label
-                htmlFor="name"
+                htmlFor="user"
                 className="block text-sm font-medium text-gray-700"
               >
-                Name*
+                User ID
               </label>
               <input
-                id="name"
-                name="name"
-                value={formData.name}
+                id="user"
+                name="user"
+                value={formData.user}
                 onChange={handleChange}
                 className="border p-2 rounded w-full"
-                placeholder="Name"
+                placeholder="User ID"
+              />
+            </div> */}
+            <div className="space-y-1 sm:col-span-2">
+              <label
+                htmlFor="companyName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Company Name*
+              </label>
+              <input
+                id="companyName"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleChange}
+                className="border p-2 rounded w-full"
+                placeholder="Company Name"
                 required
               />
             </div>
@@ -372,15 +424,15 @@ export default function AgentPage() {
             </div>
             <div className="space-y-1">
               <label
-                htmlFor="ActiveListings"
+                htmlFor="activeListings"
                 className="block text-sm font-medium text-gray-700"
               >
                 Active Listings
               </label>
               <input
-                id="ActiveListings"
-                name="ActiveListings"
-                value={formData.ActiveListings}
+                id="activeListings"
+                name="activeListings"
+                value={formData.activeListings}
                 onChange={handleChange}
                 className="border p-2 rounded w-full"
                 placeholder="Active Listings"
@@ -406,16 +458,16 @@ export default function AgentPage() {
             </div>
             <div className="space-y-1 sm:col-span-2">
               <label
-                htmlFor="AvatarUrl"
+                htmlFor="avatarUrl"
                 className="block text-sm font-medium text-gray-700"
               >
-                Avatar 
+                Avatar Image
               </label>
               <input
-                type="file"
-                id="AvatarUrl"
-                name="AvatarUrl"
-                value={formData.AvatarUrl}
+              type="file"
+                id="avatarUrl"
+                name="avatarUrl"
+                value={formData.avatarUrl}
                 onChange={handleChange}
                 className="border p-2 rounded w-full"
                 placeholder="Avatar URL"
@@ -433,7 +485,7 @@ export default function AgentPage() {
               onClick={handleSubmit}
               className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
             >
-              Save
+              {isEdit ? "Update" : "Save"}
             </button>
           </div>
         </Dialog.Panel>
